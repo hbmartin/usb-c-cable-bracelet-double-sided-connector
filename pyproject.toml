@@ -1,0 +1,9 @@
+[project]
+name = "usb-c-cable-bracelet-double-sided-connector"
+version = "0.1.0"
+description = "Parametric build123d concept generator for a wearable USB-C cable retainer"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "build123d>=0.10.0",
+]

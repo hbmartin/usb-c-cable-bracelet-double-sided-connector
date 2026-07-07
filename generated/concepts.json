@@ -1,0 +1,164 @@
+[
+  {
+    "slug": "straight_bar_push_socket",
+    "title": "Straight bar / Push-in socket",
+    "form": "straight_bar",
+    "retention_style": "push_socket",
+    "material_profile": "stiffer",
+    "dimensions_mm": [
+      46.0,
+      18.0,
+      8.2
+    ],
+    "insertion_note": "Straight axial push-in from each outer end. Removal is a direct pull while the outer throat relaxes enough to let the housing pass back out.",
+    "plug_retention_note": "Firm plug retention happens at the close-fit inner plug pocket and the shoulder between the housing chamber and the smaller plug recess.",
+    "housing_retention_note": "Moderate housing retention comes from the recessed mouth being smaller than the housing envelope, while still large enough for repeated snap-in use.",
+    "material_note": "Best for firmer TPU or semi-rigid elastomer. The body stays more solid and relies on a shallow snap throat instead of large flex windows.",
+    "step_path": "generated/step/straight_bar_push_socket.step",
+    "stl_path": "generated/stl/straight_bar_push_socket.stl"
+  },
+  {
+    "slug": "straight_bar_press_fit",
+    "title": "Straight bar / Press-fit recess",
+    "form": "straight_bar",
+    "retention_style": "press_fit",
+    "material_profile": "more flexible",
+    "dimensions_mm": [
+      46.0,
+      18.0,
+      8.2
+    ],
+    "insertion_note": "Axial press-in through a narrower snap throat. Removal uses a peel-and-pull motion so the relief windows can open before the housing clears.",
+    "plug_retention_note": "Firm plug retention comes from the same stepped plug pocket, but with a tighter entry throat so the tip stays deep in the blind recess during wear.",
+    "housing_retention_note": "Moderate housing retention is handled by the compliant snap throat and flanking relief slots so the housing is captured without needing a hard rigid clamp.",
+    "material_note": "Best for soft TPU or silicone-like elastomer. The retention comes from a more aggressive snap mouth backed by side relief slots.",
+    "step_path": "generated/step/straight_bar_press_fit.step",
+    "stl_path": "generated/stl/straight_bar_press_fit.stl"
+  },
+  {
+    "slug": "straight_bar_side_entry",
+    "title": "Straight bar / Side-entry slide-in",
+    "form": "straight_bar",
+    "retention_style": "side_entry",
+    "material_profile": "balanced flex",
+    "dimensions_mm": [
+      46.0,
+      18.0,
+      8.2
+    ],
+    "insertion_note": "Lateral slide-in through mirrored side channels, then a short inward push seats the plug against the blind stop. Removal reverses that slide while the lips flex.",
+    "plug_retention_note": "Firm plug retention occurs at the blind inner plug pocket; the plug cannot translate far enough to escape unless the whole connector is first slid back to the side slot.",
+    "housing_retention_note": "Moderate housing retention comes from top and bottom lips over the side channel, which keep the housing captured while leaving insertion force manageable.",
+    "material_note": "Best for medium-flex elastomer. It splits the difference between secure snap-in retention and easier removal.",
+    "step_path": "generated/step/straight_bar_side_entry.step",
+    "stl_path": "generated/stl/straight_bar_side_entry.stl"
+  },
+  {
+    "slug": "oval_ring_push_socket",
+    "title": "Oval ring / Push-in socket",
+    "form": "oval_ring",
+    "retention_style": "push_socket",
+    "material_profile": "stiffer",
+    "dimensions_mm": [
+      60.0,
+      28.0,
+      7.8
+    ],
+    "insertion_note": "Straight axial push-in from each outer end. Removal is a direct pull while the outer throat relaxes enough to let the housing pass back out.",
+    "plug_retention_note": "Firm plug retention happens at the close-fit inner plug pocket and the shoulder between the housing chamber and the smaller plug recess.",
+    "housing_retention_note": "Moderate housing retention comes from the recessed mouth being smaller than the housing envelope, while still large enough for repeated snap-in use.",
+    "material_note": "Best for firmer TPU or semi-rigid elastomer. The body stays more solid and relies on a shallow snap throat instead of large flex windows.",
+    "step_path": "generated/step/oval_ring_push_socket.step",
+    "stl_path": "generated/stl/oval_ring_push_socket.stl"
+  },
+  {
+    "slug": "oval_ring_press_fit",
+    "title": "Oval ring / Press-fit recess",
+    "form": "oval_ring",
+    "retention_style": "press_fit",
+    "material_profile": "more flexible",
+    "dimensions_mm": [
+      60.0,
+      28.0,
+      7.8
+    ],
+    "insertion_note": "Axial press-in through a narrower snap throat. Removal uses a peel-and-pull motion so the relief windows can open before the housing clears.",
+    "plug_retention_note": "Firm plug retention comes from the same stepped plug pocket, but with a tighter entry throat so the tip stays deep in the blind recess during wear.",
+    "housing_retention_note": "Moderate housing retention is handled by the compliant snap throat and flanking relief slots so the housing is captured without needing a hard rigid clamp.",
+    "material_note": "Best for soft TPU or silicone-like elastomer. The retention comes from a more aggressive snap mouth backed by side relief slots.",
+    "step_path": "generated/step/oval_ring_press_fit.step",
+    "stl_path": "generated/stl/oval_ring_press_fit.stl"
+  },
+  {
+    "slug": "oval_ring_side_entry",
+    "title": "Oval ring / Side-entry slide-in",
+    "form": "oval_ring",
+    "retention_style": "side_entry",
+    "material_profile": "balanced flex",
+    "dimensions_mm": [
+      60.0,
+      28.0,
+      7.8
+    ],
+    "insertion_note": "Lateral slide-in through mirrored side channels, then a short inward push seats the plug against the blind stop. Removal reverses that slide while the lips flex.",
+    "plug_retention_note": "Firm plug retention occurs at the blind inner plug pocket; the plug cannot translate far enough to escape unless the whole connector is first slid back to the side slot.",
+    "housing_retention_note": "Moderate housing retention comes from top and bottom lips over the side channel, which keep the housing captured while leaving insertion force manageable.",
+    "material_note": "Best for medium-flex elastomer. It splits the difference between secure snap-in retention and easier removal.",
+    "step_path": "generated/step/oval_ring_side_entry.step",
+    "stl_path": "generated/stl/oval_ring_side_entry.stl"
+  },
+  {
+    "slug": "flat_tab_push_socket",
+    "title": "Flat tab / Push-in socket",
+    "form": "flat_tab",
+    "retention_style": "push_socket",
+    "material_profile": "stiffer",
+    "dimensions_mm": [
+      43.95,
+      20.0,
+      7.4
+    ],
+    "insertion_note": "Straight axial push-in from each outer end. Removal is a direct pull while the outer throat relaxes enough to let the housing pass back out.",
+    "plug_retention_note": "Firm plug retention happens at the close-fit inner plug pocket and the shoulder between the housing chamber and the smaller plug recess.",
+    "housing_retention_note": "Moderate housing retention comes from the recessed mouth being smaller than the housing envelope, while still large enough for repeated snap-in use.",
+    "material_note": "Best for firmer TPU or semi-rigid elastomer. The body stays more solid and relies on a shallow snap throat instead of large flex windows.",
+    "step_path": "generated/step/flat_tab_push_socket.step",
+    "stl_path": "generated/stl/flat_tab_push_socket.stl"
+  },
+  {
+    "slug": "flat_tab_press_fit",
+    "title": "Flat tab / Press-fit recess",
+    "form": "flat_tab",
+    "retention_style": "press_fit",
+    "material_profile": "more flexible",
+    "dimensions_mm": [
+      44.0,
+      20.0,
+      7.4
+    ],
+    "insertion_note": "Axial press-in through a narrower snap throat. Removal uses a peel-and-pull motion so the relief windows can open before the housing clears.",
+    "plug_retention_note": "Firm plug retention comes from the same stepped plug pocket, but with a tighter entry throat so the tip stays deep in the blind recess during wear.",
+    "housing_retention_note": "Moderate housing retention is handled by the compliant snap throat and flanking relief slots so the housing is captured without needing a hard rigid clamp.",
+    "material_note": "Best for soft TPU or silicone-like elastomer. The retention comes from a more aggressive snap mouth backed by side relief slots.",
+    "step_path": "generated/step/flat_tab_press_fit.step",
+    "stl_path": "generated/stl/flat_tab_press_fit.stl"
+  },
+  {
+    "slug": "flat_tab_side_entry",
+    "title": "Flat tab / Side-entry slide-in",
+    "form": "flat_tab",
+    "retention_style": "side_entry",
+    "material_profile": "balanced flex",
+    "dimensions_mm": [
+      44.0,
+      20.0,
+      7.4
+    ],
+    "insertion_note": "Lateral slide-in through mirrored side channels, then a short inward push seats the plug against the blind stop. Removal reverses that slide while the lips flex.",
+    "plug_retention_note": "Firm plug retention occurs at the blind inner plug pocket; the plug cannot translate far enough to escape unless the whole connector is first slid back to the side slot.",
+    "housing_retention_note": "Moderate housing retention comes from top and bottom lips over the side channel, which keep the housing captured while leaving insertion force manageable.",
+    "material_note": "Best for medium-flex elastomer. It splits the difference between secure snap-in retention and easier removal.",
+    "step_path": "generated/step/flat_tab_side_entry.step",
+    "stl_path": "generated/stl/flat_tab_side_entry.stl"
+  }
+]

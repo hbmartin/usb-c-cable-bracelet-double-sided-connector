@@ -1,0 +1,67 @@
+[
+  {
+    "original_id": 3,
+    "variant_id": "3B",
+    "slug": "03b_curved_press_fit_15deg",
+    "title": "#3B 15\u00b0 curved press-fit",
+    "retention_style": "curved_press_fit",
+    "dimensions_mm": [
+      24.0,
+      17.0,
+      9.777
+    ],
+    "volume_mm3": 2307.298,
+    "bend_degrees": 15.0,
+    "socket_tilt_degrees": 7.5,
+    "centerline_radius_mm": 6.075209103926937,
+    "local_body_thickness_mm": 8.4,
+    "minimum_nominal_wall_mm": 0.8,
+    "end_corner_radius_mm": 0.8,
+    "edge_fillet_mm": 0.4,
+    "enclosed_relief_wall_min_mm": 0.7999999999999989,
+    "housing_capture_mm": 3.2,
+    "pocket_depth_mm": 10.8,
+    "center_divider_min_mm": 1.2008955555031982,
+    "plug_cavity_width_height_mm": [
+      8.65,
+      2.95
+    ],
+    "housing_cavity_width_height_mm": [
+      12.2,
+      6.6
+    ],
+    "mouth_width_height_mm": [
+      11.25,
+      5.65
+    ],
+    "throat_depth_mm": 0.8,
+    "relief_slot_width_mm": 0.8,
+    "plate_center_xy_mm": [
+      128,
+      128
+    ],
+    "print_dimensions_mm": [
+      24.0,
+      9.776937228376202,
+      17.0
+    ],
+    "print_transform": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      -1,
+      0,
+      128,
+      127.3115313858119,
+      8.5
+    ],
+    "insertion_note": "Push each plug straight along its tilted socket axis toward the center. Wear with the concave underside toward the wrist.",
+    "retention_note": "Winning #3 socket, mouth, throat and relief-slot dimensions; two straight sockets tilted 7.5\u00b0 each, joined by a tangent center arc.",
+    "step_path": "step/03b_curved_press_fit_15deg.step",
+    "stl_path": "stl/03b_curved_press_fit_15deg.stl"
+  }
+]

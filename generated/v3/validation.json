@@ -1,0 +1,46 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3B 15\u00b0 curved press-fit",
+      "minimum_mm": [
+        116.000053,
+        123.1115313858119,
+        0.0
+      ],
+      "maximum_mm": [
+        139.999947,
+        132.8884153858119,
+        17.0
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1225.0875244140625,
+  "filament_grams": 2.250725746154785,
+  "project_contains_cached_gcode": false,
+  "layer_count": 85,
+  "feature_type_times": {
+    "Bottom surface": 8.892437934875488,
+    "Bridge": 28.067718505859375,
+    "Custom": 369.07110595703125,
+    "Flush": 25.0,
+    "Gap infill": 44.18927001953125,
+    "Inner wall": 124.35305786132812,
+    "Internal solid infill": 73.49983978271484,
+    "Outer wall": 203.19602966308594,
+    "Overhang wall": 0.6239720582962036,
+    "Sparse infill": 67.8788070678711,
+    "Top surface": 23.768774032592773,
+    "Travel": 273.4754943847656,
+    "Undefined": 256.531982421875
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 11,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.0012741699796848002
+}

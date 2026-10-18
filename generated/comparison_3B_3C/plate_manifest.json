@@ -1,0 +1,64 @@
+{
+  "project": "connectors_3B_3C_A1_PLA.3mf",
+  "gap_mm": 12,
+  "objects": [
+    {
+      "name": "#3B 15\u00b0 curved press-fit",
+      "quantity": 1,
+      "source_stl": "generated/v3/stl/03b_curved_press_fit_15deg.stl",
+      "source_sha256": "76fc0d13762e6e84f14b34602bddf284ff63834cd04d69a5d2a17ead66613d63",
+      "center_xy_mm": [
+        115.5,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        24.0,
+        9.776937228376202,
+        17.0
+      ],
+      "transform": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        -1,
+        0,
+        115.5,
+        127.3115313858119,
+        8.5
+      ]
+    },
+    {
+      "name": "#3C Side-by-side press-fit",
+      "quantity": 1,
+      "source_stl": "generated/v4/stl/03c_side_by_side_press_fit.stl",
+      "source_sha256": "213590af45f677434231fdf8b4ecd0119bdb8ace5509accabd6a04bd2308760b",
+      "center_xy_mm": [
+        146.0,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        13,
+        30,
+        8.4
+      ],
+      "transform": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        146.0,
+        128.0,
+        4.2
+      ]
+    }
+  ]
+}

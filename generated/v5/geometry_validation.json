@@ -1,0 +1,17 @@
+{
+  "valid": true,
+  "solid_count": 1,
+  "dimensions_mm": [
+    15.2,
+    30.0,
+    9.774
+  ],
+  "independent_removed_void_count": 6,
+  "bend_degrees": 15.0,
+  "local_radial_thickness_mm": 9.4,
+  "inter_lane_void_separation_mm": 1.2249999999999992,
+  "curved_skin_wall_mm": 0.9867258161577076,
+  "enclosed_relief_wall_mm": 0.8000000000000008,
+  "enclosed_wall_mm": 0.8000000000000008,
+  "closed_end_wall_mm": 3.136852989719396
+}

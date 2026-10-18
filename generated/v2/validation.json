@@ -1,0 +1,52 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3 Compact press-fit",
+      "minimum_mm": [
+        80.0,
+        119.5,
+        0.0
+      ],
+      "maximum_mm": [
+        104.0,
+        136.5,
+        8.4
+      ]
+    },
+    {
+      "name": "#5 Compact side-entry",
+      "minimum_mm": [
+        116.0,
+        119.5,
+        0.0
+      ],
+      "maximum_mm": [
+        140.0,
+        136.5,
+        8.4
+      ]
+    },
+    {
+      "name": "#9 Compact ribbed push-in",
+      "minimum_mm": [
+        152.0,
+        119.5,
+        0.0
+      ],
+      "maximum_mm": [
+        176.0,
+        136.5,
+        8.4
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1452.4744873046875,
+  "filament_grams": 6.368514537811279,
+  "project_contains_cached_gcode": false
+}

@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import dataclass
+from functools import lru_cache
+from math import cos, radians, sin
 from pathlib import Path
 
-from build123d import Box, RectangleRounded, SlotOverall, export_step, export_stl, extrude
+from build123d import Axis, Box, Edge, Face, GeomType, Plane, Polygon, RectangleRounded, Wire, export_step, export_stl, extrude
 
 
 @dataclass(frozen=True)
@@ -16,217 +18,109 @@ class UsbCEnvelope:
     housing_length: float = 8.8
     housing_width: float = 12.0
     housing_thickness: float = 6.4
-    cable_width: float = 4.5
-    cable_thickness: float = 3.2
     tip_clearance: float = 0.8
-
-    @property
-    def captured_length(self) -> float:
-        return self.housing_length + self.plug_length + self.tip_clearance
-
-
-@dataclass(frozen=True)
-class MaterialProfile:
-    label: str
-    plug_clearance: float
-    housing_clearance: float
-    throat_reduction: float
-    side_slot_reduction: float
-    relief_slot_width: float
-    material_note: str
 
 
 @dataclass(frozen=True)
 class FormConfig:
-    key: str
-    label: str
-    length: float
-    width: float
-    thickness: float
-    corner_radius: float
-    edge_fillet: float
-    inner_length: float | None = None
-    inner_width: float | None = None
+    length: float = 24.0
+    width: float = 17.0
+    thickness: float = 8.4
+    corner_radius: float = 1.6
+    edge_fillet: float = 0.4
 
 
 @dataclass(frozen=True)
 class ConceptSpec:
+    original_id: int
     slug: str
-    form: str
-    retention_style: str
     title: str
-    material_profile: MaterialProfile
+    retention_style: str
+    plug_clearance: float
+    housing_clearance: float
+    insertion_note: str
+    retention_note: str
 
 
 @dataclass(frozen=True)
 class GeneratedConcept:
     spec: ConceptSpec
     dimensions_mm: tuple[float, float, float]
-    insertion_note: str
-    plug_retention_note: str
-    housing_retention_note: str
-    material_note: str
+    volume_mm3: float
     step_path: Path
     stl_path: Path
 
 
 USB_C = UsbCEnvelope()
-
-STIFF_PROFILE = MaterialProfile(
-    label="stiffer",
-    plug_clearance=0.25,
-    housing_clearance=0.35,
-    throat_reduction=0.55,
-    side_slot_reduction=0.55,
-    relief_slot_width=0.0,
-    material_note=(
-        "Best for firmer TPU or semi-rigid elastomer. The body stays more solid and "
-        "relies on a shallow snap throat instead of large flex windows."
-    ),
-)
-
-COMPLIANT_PROFILE = MaterialProfile(
-    label="more flexible",
-    plug_clearance=0.15,
-    housing_clearance=0.20,
-    throat_reduction=0.95,
-    side_slot_reduction=0.85,
-    relief_slot_width=0.80,
-    material_note=(
-        "Best for soft TPU or silicone-like elastomer. The retention comes from a more "
-        "aggressive snap mouth backed by side relief slots."
-    ),
-)
-
-BALANCED_PROFILE = MaterialProfile(
-    label="balanced flex",
-    plug_clearance=0.20,
-    housing_clearance=0.25,
-    throat_reduction=0.75,
-    side_slot_reduction=0.70,
-    relief_slot_width=0.0,
-    material_note=(
-        "Best for medium-flex elastomer. It splits the difference between secure snap-in "
-        "retention and easier removal."
-    ),
-)
-
-FORM_CONFIGS = {
-    "straight_bar": FormConfig(
-        key="straight_bar",
-        label="Straight bar",
-        length=46.0,
-        width=18.0,
-        thickness=8.2,
-        corner_radius=4.0,
-        edge_fillet=0.9,
-    ),
-    "oval_ring": FormConfig(
-        key="oval_ring",
-        label="Oval ring",
-        length=60.0,
-        width=28.0,
-        thickness=7.8,
-        corner_radius=0.0,
-        edge_fillet=0.8,
-        inner_length=18.0,
-        inner_width=12.0,
-    ),
-    "flat_tab": FormConfig(
-        key="flat_tab",
-        label="Flat tab",
-        length=44.0,
-        width=20.0,
-        thickness=7.4,
-        corner_radius=6.0,
-        edge_fillet=0.8,
-    ),
-}
-
-INSERTION_NOTES = {
-    "push_socket": (
-        "Straight axial push-in from each outer end. Removal is a direct pull while the "
-        "outer throat relaxes enough to let the housing pass back out."
-    ),
-    "press_fit": (
-        "Axial press-in through a narrower snap throat. Removal uses a peel-and-pull motion "
-        "so the relief windows can open before the housing clears."
-    ),
-    "side_entry": (
-        "Lateral slide-in through mirrored side channels, then a short inward push seats the "
-        "plug against the blind stop. Removal reverses that slide while the lips flex."
-    ),
-}
-
-PLUG_RETENTION_NOTES = {
-    "push_socket": (
-        "Firm plug retention happens at the close-fit inner plug pocket and the shoulder "
-        "between the housing chamber and the smaller plug recess."
-    ),
-    "press_fit": (
-        "Firm plug retention comes from the same stepped plug pocket, but with a tighter "
-        "entry throat so the tip stays deep in the blind recess during wear."
-    ),
-    "side_entry": (
-        "Firm plug retention occurs at the blind inner plug pocket; the plug cannot translate "
-        "far enough to escape unless the whole connector is first slid back to the side slot."
-    ),
-}
-
-HOUSING_RETENTION_NOTES = {
-    "push_socket": (
-        "Moderate housing retention comes from the recessed mouth being smaller than the "
-        "housing envelope, while still large enough for repeated snap-in use."
-    ),
-    "press_fit": (
-        "Moderate housing retention is handled by the compliant snap throat and flanking "
-        "relief slots so the housing is captured without needing a hard rigid clamp."
-    ),
-    "side_entry": (
-        "Moderate housing retention comes from top and bottom lips over the side channel, "
-        "which keep the housing captured while leaving insertion force manageable."
-    ),
-}
-
-FORM_NOTES = {
-    "straight_bar": "Compact linear spine with mirrored inward-facing pockets.",
-    "oval_ring": "Closed-loop body that reduces snagging and reads most like jewelry.",
-    "flat_tab": "Lowest-profile planar body aimed at the smallest wearable footprint.",
-}
+BODY = FormConfig()
+HOUSING_CAPTURE = 3.2
+THROAT_LENGTH = 0.8
+PLUG_START = HOUSING_CAPTURE - 0.15
+POCKET_DEPTH = HOUSING_CAPTURE + USB_C.plug_length + USB_C.tip_clearance
+CENTER_DIVIDER = BODY.length - 2 * POCKET_DEPTH
+MIN_WALL = 0.8
+RELIEF_WIDTH = 0.8
+RELIEF_END = 6.0
+SIDE_SEATING_TRAVEL = 0.8
+# The last 0.8 mm of the seated metal tip sits behind a closed side wall.
+SIDE_TIP_CHANNEL_END = HOUSING_CAPTURE + USB_C.plug_length - SIDE_SEATING_TRAVEL
+RIDGE_HEIGHT = 0.2
+RIDGE_BASE = 0.8
+RIDGE_SPAN = 8.0
+RIDGE_CENTERS = (1.3, 2.5)
+PLATE_CENTERS = ((92.0, 128.0), (128.0, 128.0), (164.0, 128.0))
+VARIANTS = ("compact", "curved-press-fit", "side-by-side-press-fit", "curved-side-by-side-press-fit")
+BEND_DEGREES = 15.0
+HALF_BEND = radians(BEND_DEGREES / 2)
+CURVED_END_RADIUS = 0.8
+SIDE_BY_SIDE_BODY = FormConfig(length=13, width=30, thickness=8.4, corner_radius=0.8, edge_fillet=0.4)
+LANE_PITCH = 13.0
+CURVED_SIDE_BY_SIDE_BODY = FormConfig(length=15.2, width=30, thickness=9.4, corner_radius=0.8, edge_fillet=0.4)
+CURVED_SIDE_BY_SIDE_PRINT_ANGLE = -82.5
 
 
-def build_concepts() -> list[ConceptSpec]:
-    forms = [
-        ("straight_bar", "Straight bar"),
-        ("oval_ring", "Oval ring"),
-        ("flat_tab", "Flat tab"),
+def build_concepts(variant: str = "compact") -> list[ConceptSpec]:
+    """The three requested revisions; IDs refer to the original nine-part plate."""
+    if variant == "curved-side-by-side-press-fit":
+        return [ConceptSpec(3, "03d_curved_side_by_side_press_fit_15deg",
+                            "#3D 15° curved side-by-side press-fit", "curved_side_by_side_press_fit", 0.15, 0.20,
+                            "Wear the concave underside toward the wrist. Push each plug straight along its "
+                            "own 7.5° tilted axis; the two offset sockets open from opposite ends.",
+                            "Winning #3 sockets, mouths, throats and relief slots rigidly tilted 7.5° each, "
+                            "in lanes 13 mm apart inside a body with curved wrist and outer faces.")]
+    if variant == "side-by-side-press-fit":
+        return [ConceptSpec(3, "03c_side_by_side_press_fit", "#3C Side-by-side press-fit",
+                            "side_by_side_press_fit", 0.15, 0.20,
+                            "Push one plug into each opposite end, along the two parallel socket axes. "
+                            "The plugs' wide faces stay parallel to the top; cables exit opposite ends.",
+                            "Winning #3 sockets, mouths, nominal throats and relief slots translated "
+                            "into two lanes 13 mm apart, with independent blind stops.")]
+    if variant == "curved-press-fit":
+        return [ConceptSpec(3, "03b_curved_press_fit_15deg", "#3B 15° curved press-fit",
+                            "curved_press_fit", 0.15, 0.20,
+                            "Push each plug straight along its tilted socket axis toward the center. "
+                            "Wear with the concave underside toward the wrist.",
+                            "Winning #3 socket, mouth, throat and relief-slot dimensions; "
+                            "two straight sockets tilted 7.5° each, joined by a tangent center arc.")]
+    if variant != "compact":
+        raise ValueError(f"Unknown variant: {variant}")
+    return [
+        ConceptSpec(3, "03_compact_press_fit", "#3 Compact press-fit", "press_fit", 0.15, 0.20,
+                    "Push plugs into opposite ends, metal tips toward the center. Only the front "
+                    "3.2 mm of each plastic housing is captured. Test PLA flex without forcing it.",
+                    "Original #3 cavity/mouth widths and heights, a shorter 0.8 mm throat, "
+                    "and 0.8 mm flanking relief slots."),
+        ConceptSpec(5, "05_compact_side_entry", "#5 Compact side-entry", "side_entry", 0.20, 0.25,
+                    "Slide the housing and metal tip sideways through the stepped opening, "
+                    "then move the plug 0.8 mm inward. Reverse that move before sliding out.",
+                    "Mirrored side entrances with lead-ins, localized rounded housing detents "
+                    "(6.25 mm gap), and a closed side wall capturing the last 0.8 mm of the tip."),
+        ConceptSpec(9, "09_compact_ribbed_push_in", "#9 Compact ribbed push-in", "push_socket", 0.25, 0.35,
+                    "Push each plug into an end. Rounded ribs grip the plastic housing; "
+                    "most of the housing remains exposed.",
+                    "Two opposing rib pairs per end project 0.2 mm, span 8 mm, have 0.8 mm "
+                    "axial bases, and sit 1.3/2.5 mm inside the opening. Metal-tip pockets stay smooth."),
     ]
-    styles = [
-        ("push_socket", "Push-in socket", STIFF_PROFILE),
-        ("press_fit", "Press-fit recess", COMPLIANT_PROFILE),
-        ("side_entry", "Side-entry slide-in", BALANCED_PROFILE),
-    ]
-
-    concepts: list[ConceptSpec] = []
-    for form_key, form_label in forms:
-        for style_key, style_label, profile in styles:
-            concepts.append(
-                ConceptSpec(
-                    slug=f"{form_key}_{style_key}",
-                    form=form_key,
-                    retention_style=style_key,
-                    title=f"{form_label} / {style_label}",
-                    material_profile=profile,
-                )
-            )
-    return concepts
-
-
-def combine(solids: list):
-    result = solids[0]
-    for solid in solids[1:]:
-        result = result + solid
-    return result
 
 
 def mirrored_x_span(body_length: float, side: int, start: float, end: float) -> tuple[float, float]:
@@ -235,319 +129,616 @@ def mirrored_x_span(body_length: float, side: int, start: float, end: float) -> 
     return body_length / 2 - end, body_length / 2 - start
 
 
-def x_prism(
-    body_length: float,
-    side: int,
-    start: float,
-    end: float,
-    width: float,
-    height: float,
-    center_y: float = 0.0,
-    center_z: float = 0.0,
-):
-    x0, x1 = mirrored_x_span(body_length, side, start, end)
+def depth_x(side: int, depth: float) -> float:
+    return side * (BODY.length / 2 - depth)
+
+
+def x_prism(side: int, start: float, end: float, width: float, height: float,
+            center_y: float = 0.0, center_z: float = 0.0):
+    x0, x1 = mirrored_x_span(BODY.length, side, start, end)
     return Box(abs(x1 - x0), width, height).translate(((x0 + x1) / 2, center_y, center_z))
 
 
-def y_slot_prism(
-    body_length: float,
-    body_width: float,
-    side: int,
-    start: float,
-    end: float,
-    slot_direction: int,
-    height: float,
-    inner_reach: float,
-):
-    x0, x1 = mirrored_x_span(body_length, side, start, end)
-    outer_y = slot_direction * (body_width / 2 + 0.25)
-    inner_y = slot_direction * inner_reach
-    return Box(abs(x1 - x0), abs(outer_y - inner_y), height).translate(
-        ((x0 + x1) / 2, (outer_y + inner_y) / 2, 0)
-    )
-
-
-def make_body(config: FormConfig):
-    if config.key == "oval_ring":
-        assert config.inner_length is not None
-        assert config.inner_width is not None
-        body = extrude(
-            SlotOverall(config.length, config.width) - SlotOverall(config.inner_length, config.inner_width),
-            amount=config.thickness,
-        )
-    else:
-        body = extrude(
-            RectangleRounded(config.length, config.width, config.corner_radius),
-            amount=config.thickness,
-        )
-
-    body = body.translate((0, 0, -config.thickness / 2))
+def make_body(config: FormConfig = BODY):
+    body = extrude(RectangleRounded(config.length, config.width, config.corner_radius),
+                   amount=config.thickness).translate((0, 0, -config.thickness / 2))
     return body.fillet(config.edge_fillet, body.edges())
 
 
-def cavity_segments(spec: ConceptSpec, config: FormConfig) -> list:
-    profile = spec.material_profile
-    plug_width = USB_C.plug_width + profile.plug_clearance
-    plug_height = USB_C.plug_thickness + profile.plug_clearance
-    housing_width = USB_C.housing_width + profile.housing_clearance
-    housing_height = USB_C.housing_thickness + profile.housing_clearance
-    cable_width = USB_C.cable_width + 0.35
-    cable_height = USB_C.cable_thickness + 0.30
+def side_channel(side: int, start: float, end: float, inner_reach: float,
+                 height: float, lead_in: bool = False):
+    """Swept lateral opening; the outer ramp still leaves >=0.8 mm roof/floor."""
+    direction = -side
+    outer, lead_start = BODY.width / 2 + 0.3, BODY.width / 2 - 0.6
+    extra = 0.1 if lead_in else 0.0
+    points = [(direction * inner_reach, -height / 2),
+              (direction * lead_start, -height / 2),
+              (direction * outer, -height / 2 - extra),
+              (direction * outer, height / 2 + extra),
+              (direction * lead_start, height / 2),
+              (direction * inner_reach, height / 2)]
+    profile = Plane.YZ * Polygon(*points, align=None)
+    x0, x1 = mirrored_x_span(BODY.length, side, start, end)
+    return extrude(profile, amount=abs(x1 - x0), dir=(1, 0, 0)).translate((x0, 0, 0))
 
-    throat_width = max(cable_width, housing_width - profile.throat_reduction)
-    throat_height = max(cable_height, housing_height - profile.throat_reduction)
 
-    front_setback = 1.2
-    throat_length = 2.2
-    housing_start = throat_length
-    housing_end = housing_start + USB_C.housing_length
-    plug_start = housing_end - 0.15
-    plug_end = housing_end + USB_C.plug_length + USB_C.tip_clearance
-
-    segments: list = []
-    for side in (-1, 1):
-        if spec.retention_style == "side_entry":
-            segments.extend(
-                [
-                    x_prism(
-                        config.length,
-                        side,
-                        -0.2,
-                        front_setback + 1.4,
-                        cable_width,
-                        cable_height,
-                    ),
-                    x_prism(
-                        config.length,
-                        side,
-                        front_setback,
-                        front_setback + USB_C.housing_length,
-                        housing_width,
-                        housing_height,
-                    ),
-                    x_prism(
-                        config.length,
-                        side,
-                        front_setback + USB_C.housing_length - 0.15,
-                        front_setback + USB_C.housing_length + USB_C.plug_length + USB_C.tip_clearance,
-                        plug_width,
-                        plug_height,
-                    ),
-                    y_slot_prism(
-                        config.length,
-                        config.width,
-                        side,
-                        front_setback - 0.2,
-                        front_setback + USB_C.captured_length,
-                        slot_direction=-side,
-                        height=max(cable_height, housing_height - profile.side_slot_reduction),
-                        inner_reach=housing_width / 2 - 0.30,
-                    ),
-                ]
-            )
-            continue
-
-        segments.extend(
-            [
-                x_prism(
-                    config.length,
-                    side,
-                    -0.2,
-                    throat_length,
-                    throat_width,
-                    throat_height,
-                ),
-                x_prism(
-                    config.length,
-                    side,
-                    housing_start - 0.15,
-                    housing_end,
-                    housing_width,
-                    housing_height,
-                ),
-                x_prism(
-                    config.length,
-                    side,
-                    plug_start,
-                    plug_end,
-                    plug_width,
-                    plug_height,
-                ),
-            ]
-        )
-
+def cavity_segments(spec: ConceptSpec, sides=(-1, 1)) -> list:
+    pw, ph = USB_C.plug_width + spec.plug_clearance, USB_C.plug_thickness + spec.plug_clearance
+    hw, hh = USB_C.housing_width + spec.housing_clearance, USB_C.housing_thickness + spec.housing_clearance
+    cutters = []
+    for side in sides:
+        cutters.append(x_prism(side, PLUG_START, POCKET_DEPTH, pw, ph))
         if spec.retention_style == "press_fit":
-            relief_height = max(config.thickness - 1.6, cable_height + 1.0)
-            relief_center = housing_width / 2 + 0.95
-            relief_end = throat_length + USB_C.housing_length * 0.82
-            segments.extend(
-                [
-                    x_prism(
-                        config.length,
-                        side,
-                        0.6,
-                        relief_end,
-                        profile.relief_slot_width,
-                        relief_height,
-                        center_y=relief_center,
-                    ),
-                    x_prism(
-                        config.length,
-                        side,
-                        0.6,
-                        relief_end,
-                        profile.relief_slot_width,
-                        relief_height,
-                        center_y=-relief_center,
-                    ),
-                ]
-            )
-    return segments
+            cutters += [x_prism(side, -0.3, THROAT_LENGTH, hw - 0.95, hh - 0.95),
+                        x_prism(side, THROAT_LENGTH - 0.15, HOUSING_CAPTURE, hw, hh)]
+            for direction in (-1, 1):
+                cutters.append(x_prism(side, THROAT_LENGTH, RELIEF_END, RELIEF_WIDTH,
+                                       BODY.thickness - 2 * MIN_WALL,
+                                       center_y=direction * (hw / 2 + 0.95)))
+        else:
+            # Exposed housings need a housing-sized end opening, not the old cable-sized end cap.
+            cutters.append(x_prism(side, -0.3, HOUSING_CAPTURE, hw, hh))
+        if spec.retention_style == "side_entry":
+            cutters += [side_channel(side, -0.3, HOUSING_CAPTURE, hw / 2 - 0.3, hh, True),
+                        side_channel(side, PLUG_START, SIDE_TIP_CHANNEL_END, pw / 2 - 0.3, ph)]
+    return cutters
+
+
+def housing_retainers(spec: ConceptSpec) -> list:
+    """Each rounded rib projects 0.2 mm and has another 0.2 mm embedded in its wall."""
+    hw = USB_C.housing_width + spec.housing_clearance
+    hh = USB_C.housing_thickness + spec.housing_clearance
+    ribs = []
+    for side in (-1, 1):
+        for z_sign in (-1, 1):
+            z = z_sign * hh / 2
+            if spec.retention_style == "push_socket":
+                for depth in RIDGE_CENTERS:
+                    # Vertical side-wall ribs grow from the floor. An isolated rib on
+                    # the underside of the roof would start in mid-air when printed flat.
+                    profile = RectangleRounded(RIDGE_BASE, 2 * RIDGE_HEIGHT, 0.15)
+                    ribs.append(extrude(profile, amount=RIDGE_SPAN).translate(
+                        (depth_x(side, depth), z_sign * hw / 2, -RIDGE_SPAN / 2)))
+            elif spec.retention_style == "side_entry":
+                profile = Plane.YZ * RectangleRounded(RIDGE_BASE, 2 * RIDGE_HEIGHT, 0.15)
+                y = -side * ((USB_C.housing_width + spec.housing_clearance) / 2 + 0.8)
+                # Anchor the upper detent in the solid shoulder as well as its roof.
+                # This avoids a disconnected first extrusion beneath the roof.
+                x0, x1 = mirrored_x_span(BODY.length, side, 0.8, 3.6)
+                ribs.append(extrude(profile, amount=x1-x0, dir=(1, 0, 0)).translate((x0, y, z)))
+    return ribs
 
 
 def build_part(spec: ConceptSpec):
-    config = FORM_CONFIGS[spec.form]
-    body = make_body(config)
-    features = combine(cavity_segments(spec, config))
-    return body - features
+    if spec.retention_style == "curved_side_by_side_press_fit":
+        part = make_curved_side_by_side_body()
+        for lane in curved_side_by_side_cutters():
+            for cutter in lane:
+                part = part - cutter
+        if not part.is_valid or len(part.solids()) != 1:
+            raise ValueError("Curved side-by-side press-fit: expected one valid solid")
+        minimums = curved_side_by_side_minimums()
+        if (minimums['inter_lane_void_separation_mm'] < 1.0
+                or minimums['enclosed_wall_mm'] < MIN_WALL - 1e-6
+                or minimums['closed_end_wall_mm'] < 2.2 - 1e-6):
+            raise ValueError(f"Curved side-by-side press-fit: insufficient material: {minimums}")
+        return part
+    if spec.retention_style == "side_by_side_press_fit":
+        part = make_side_by_side_body()
+        for lane in side_by_side_cutters():
+            for cutter in lane:
+                part = part - cutter
+        if not part.is_valid or len(part.solids()) != 1:
+            raise ValueError("Side-by-side press-fit: expected one valid solid")
+        separation, wall = side_by_side_minimums()
+        if separation < 1.0 or wall < MIN_WALL - 1e-6:
+            raise ValueError("Side-by-side press-fit: insufficient lane separation or enclosed wall")
+        return part
+    if spec.retention_style == "curved_press_fit":
+        part = make_curved_body()
+        reference = build_concepts()[0]
+        for side in (-1, 1):
+            for cutter in cavity_segments(reference, (side,)):
+                part = part - curved_socket_transform(cutter, side)
+        if not part.is_valid or len(part.solids()) != 1:
+            raise ValueError("Curved press-fit: expected one valid solid")
+        if curved_divider_thickness() < 1.0 or curved_minimum_enclosed_wall() < MIN_WALL - 1e-6:
+            raise ValueError("Curved press-fit: insufficient divider or enclosed relief-slot wall")
+        return part
+    part = make_body()
+    for cutter in cavity_segments(spec):
+        part = part - cutter
+    for rib in housing_retainers(spec):
+        part = part + rib
+    if not part.is_valid or len(part.solids()) != 1:
+        raise ValueError(f"{spec.slug}: expected one valid solid")
+    return part
+
+
+def curved_body_at_radius(radius: float):
+    """Exact tangent straight–arc–straight XZ outline, extruded across the width."""
+    half = BODY.thickness / 2
+    c, s = cos(HALF_BEND), sin(HALF_BEND)
+    upper = ((radius + half) * s, 0, (radius + half) * c - radius)
+    lower = ((radius - half) * s, 0, (radius - half) * c - radius)
+    upper_end = (upper[0] + POCKET_DEPTH * c, 0, upper[2] - POCKET_DEPTH * s)
+    lower_end = (lower[0] + POCKET_DEPTH * c, 0, lower[2] - POCKET_DEPTH * s)
+
+    def mirror(p):
+        return (-p[0], p[1], p[2])
+
+    outline = Wire([
+        Edge.make_line(mirror(upper_end), mirror(upper)),
+        Edge.make_three_point_arc(mirror(upper), (0, 0, half), upper),
+        Edge.make_line(upper, upper_end),
+        Edge.make_line(upper_end, lower_end),
+        Edge.make_line(lower_end, lower),
+        Edge.make_three_point_arc(lower, (0, 0, -half), mirror(lower)),
+        Edge.make_line(mirror(lower), mirror(lower_end)),
+        Edge.make_line(mirror(lower_end), mirror(upper_end)),
+    ])
+    body = extrude(Face(outline), amount=BODY.width, dir=(0, 1, 0)).translate((0, -BODY.width/2, 0))
+    # Round the four end corners along each socket's local thickness direction.
+    end_edges = [e for e in body.edges() if abs(e.length - BODY.thickness) < 1e-6]
+    # A 1.6 mm end corner leaves only 0.63 mm beside the unchanged relief slot.
+    # Use a smaller exterior radius here to retain the required 0.8 mm skin.
+    body = body.fillet(CURVED_END_RADIUS, end_edges)
+    return body.fillet(BODY.edge_fillet, body.edges())
+
+
+@lru_cache(maxsize=1)
+def curved_radius() -> float:
+    """Solve finished, rounded outside length; never scale the proven sockets."""
+    c, s = cos(HALF_BEND), sin(HALF_BEND)
+    radius = (BODY.length - 2 * POCKET_DEPTH * c - BODY.thickness * s) / (2 * s)
+    for _ in range(8):
+        actual = curved_body_at_radius(radius).bounding_box().size.X
+        error = BODY.length - actual
+        if abs(error) < 1e-6:
+            return radius
+        radius += error / (2 * s)
+    raise ValueError("Unable to solve curved body's 24 mm finished length")
+
+
+@lru_cache(maxsize=1)
+def make_curved_body():
+    return curved_body_at_radius(curved_radius())
+
+
+def curved_local_point(side: int, depth: float, y: float = 0, z: float = 0):
+    """Map socket-local depth/width/height coordinates into the finished holder."""
+    radius = curved_radius()
+    c, s = cos(HALF_BEND), sin(HALF_BEND)
+    mouth_x = radius * s + POCKET_DEPTH * c
+    mouth_z = radius * c - radius - POCKET_DEPTH * s
+    return (side * (mouth_x - depth * c + z * s), y, mouth_z + depth * s + z * c)
+
+
+def curved_socket_transform(shape, side: int):
+    return (shape.translate((-side * BODY.length / 2, 0, 0))
+            .rotate(Axis.Y, side * BEND_DEGREES / 2)
+            .translate(curved_local_point(side, 0)))
+
+
+@lru_cache(maxsize=1)
+def make_side_by_side_body():
+    return make_body(SIDE_BY_SIDE_BODY)
+
+
+def side_by_side_socket_transform(shape, side: int):
+    return shape.translate((side*(SIDE_BY_SIDE_BODY.length-BODY.length)/2, side*LANE_PITCH/2, 0))
+
+
+def side_by_side_local_point(side: int, depth: float, y: float = 0, z: float = 0):
+    return (side*(SIDE_BY_SIDE_BODY.length/2-depth), side*LANE_PITCH/2+y, z)
+
+
+@lru_cache(maxsize=1)
+def side_by_side_cutters():
+    reference = build_concepts()[0]
+    return tuple(tuple(side_by_side_socket_transform(cutter, side)
+                       for cutter in cavity_segments(reference, (side,))) for side in (-1, 1))
+
+
+@lru_cache(maxsize=1)
+def side_by_side_minimums():
+    """Exact inter-lane void separation and enclosed relief-to-exterior wall thickness."""
+    lanes = side_by_side_cutters()
+    separation = min(a.distance_to(b) for a in lanes[0] for b in lanes[1])
+    faces = make_side_by_side_body().faces()
+    wall = min(relief.distance_to(face) for lane in lanes for relief in lane[-2:] for face in faces)
+    return separation, wall
+
+
+def curved_side_by_side_body_at_radius(radius: float):
+    """Annular XZ section: concave wrist face, convex outer face, flat radial ends."""
+    config = CURVED_SIDE_BY_SIDE_BODY
+    half, s, c = config.thickness/2, sin(HALF_BEND), cos(HALF_BEND)
+    upper = ((radius+half)*s, 0, (radius+half)*c-radius)
+    lower = ((radius-half)*s, 0, (radius-half)*c-radius)
+    mirror = lambda p: (-p[0], p[1], p[2])
+    outline = Wire([
+        Edge.make_three_point_arc(mirror(upper), (0, 0, half), upper),
+        Edge.make_line(upper, lower),
+        Edge.make_three_point_arc(lower, (0, 0, -half), mirror(lower)),
+        Edge.make_line(mirror(lower), mirror(upper)),
+    ])
+    body = extrude(Face(outline), amount=config.width, dir=(0, 1, 0)).translate((0, -config.width/2, 0))
+    body = body.fillet(config.corner_radius, [e for e in body.edges() if abs(e.length-config.thickness) < 1e-6])
+    return body.fillet(config.edge_fillet, body.edges())
+
+
+@lru_cache(maxsize=1)
+def curved_side_by_side_radius() -> float:
+    radius = 53.901
+    for _ in range(8):
+        error = CURVED_SIDE_BY_SIDE_BODY.length-curved_side_by_side_body_at_radius(radius).bounding_box().size.X
+        if abs(error) < 1e-6:
+            return radius
+        radius += error/(2*sin(HALF_BEND))
+    raise ValueError("Unable to solve #3D's 15.2 mm finished length")
+
+
+@lru_cache(maxsize=1)
+def make_curved_side_by_side_body():
+    return curved_side_by_side_body_at_radius(curved_side_by_side_radius())
+
+
+def curved_side_by_side_local_point(side: int, depth: float, y: float = 0, z: float = 0):
+    """Socket-local depth/width/height, preserving the complete reference #3 fit."""
+    radius, s, c = curved_side_by_side_radius(), sin(HALF_BEND), cos(HALF_BEND)
+    return (side*(radius*s-depth*c+z*s), side*LANE_PITCH/2+y,
+            radius*(c-1)+depth*s+z*c)
+
+
+def curved_side_by_side_socket_transform(shape, side: int):
+    return (shape.translate((-side*BODY.length/2, 0, 0))
+            .rotate(Axis.Y, side*BEND_DEGREES/2)
+            .translate(curved_side_by_side_local_point(side, 0)))
+
+
+@lru_cache(maxsize=1)
+def curved_side_by_side_cutters():
+    reference = build_concepts()[0]
+    return tuple(tuple(curved_side_by_side_socket_transform(cutter, side)
+                       for cutter in cavity_segments(reference, (side,))) for side in (-1, 1))
+
+
+@lru_cache(maxsize=1)
+def curved_side_by_side_minimums():
+    """Exact B-rep distances, including all relief-slot and pocket pairings."""
+    body, lanes = make_curved_side_by_side_body(), curved_side_by_side_cutters()
+    faces = body.faces()
+    # Large cylindrical faces are the two curved skins; small cylinders are edge rounds.
+    skins = [f for f in faces if f.geom_type == GeomType.CYLINDER and f.area > 100]
+    assert len(skins) == 2
+    skin_wall = min(cutter.distance_to(face) for lane in lanes for cutter in lane for face in skins)
+    relief_wall = min(relief.distance_to(face) for lane in lanes for relief in lane[-2:] for face in faces)
+    end_walls = []
+    for side, lane in zip((-1, 1), lanes, strict=True):
+        opposite_end = [f for f in faces if f.geom_type == GeomType.PLANE
+                        and f.normal_at().X*side < -0.9]
+        assert len(opposite_end) == 1
+        end_walls.append(lane[0].distance_to(opposite_end[0]))
+    return dict(inter_lane_void_separation_mm=min(a.distance_to(b) for a in lanes[0] for b in lanes[1]),
+                curved_skin_wall_mm=skin_wall, enclosed_relief_wall_mm=relief_wall,
+                enclosed_wall_mm=min(skin_wall, relief_wall), closed_end_wall_mm=min(end_walls))
+
+
+def default_output_dir(variant: str) -> Path:
+    return Path({"compact": "generated/v2", "curved-press-fit": "generated/v3",
+                 "side-by-side-press-fit": "generated/v4", "curved-side-by-side-press-fit": "generated/v5"}[variant])
+
+
+def plate_centers(variant: str = "compact"):
+    return PLATE_CENTERS if variant == "compact" else ((128.0, 128.0),)
+
+
+def print_geometry(variant: str = "compact"):
+    """Expected dimensions and explicit 3MF transforms, with Z minimum on the bed."""
+    if variant == "curved-side-by-side-press-fit":
+        angle = radians(CURVED_SIDE_BY_SIDE_PRINT_ANGLE)
+        c, s = cos(angle), sin(angle)
+        bounds = make_curved_side_by_side_body().rotate(Axis.Y, CURVED_SIDE_BY_SIDE_PRINT_ANGLE).bounding_box()
+        return (tuple(bounds.size), [(c, 0, -s, 0, 1, 0, s, 0, c,
+                 128-(bounds.min.X+bounds.max.X)/2, 128, -bounds.min.Z)])
+    if variant == "side-by-side-press-fit":
+        return ((SIDE_BY_SIDE_BODY.length, SIDE_BY_SIDE_BODY.width, SIDE_BY_SIDE_BODY.thickness),
+                [(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 128, SIDE_BY_SIDE_BODY.thickness/2)])
+    if variant == "curved-press-fit":
+        bounds = make_curved_body().bounding_box()
+        return ((BODY.length, bounds.size.Z, BODY.width),
+                [(1, 0, 0, 0, 0, 1, 0, -1, 0,
+                  128, 128 + (bounds.min.Z + bounds.max.Z)/2, BODY.width/2)])
+    return ((BODY.length, BODY.width, BODY.thickness),
+            [(1, 0, 0, 0, 1, 0, 0, 0, 1, x, y, BODY.thickness/2)
+             for x, y in PLATE_CENTERS])
 
 
 def rounded_dimensions(part) -> tuple[float, float, float]:
     size = part.bounding_box().size
-    return tuple(round(value, 2) for value in (size.X, size.Y, size.Z))
+    return tuple(round(value, 3) for value in (size.X, size.Y, size.Z))
 
 
-def write_manifest(concepts: list[GeneratedConcept], output_dir: Path) -> None:
-    md_path = output_dir / "concepts.md"
-    json_path = output_dir / "concepts.json"
-
-    lines = [
-        "# Wearable USB-C Retainer Concepts",
-        "",
-        "All concepts keep both USB-C ends facing each other on the same plane and assume a typical connector envelope:",
-        "",
-        (
-            f"- Plug envelope: {USB_C.plug_length:.1f} x {USB_C.plug_width:.1f} x "
-            f"{USB_C.plug_thickness:.1f} mm"
-        ),
-        (
-            f"- Housing envelope: {USB_C.housing_length:.1f} x {USB_C.housing_width:.1f} x "
-            f"{USB_C.housing_thickness:.1f} mm"
-        ),
-        f"- Cable pass-through allowance: {USB_C.cable_width:.1f} x {USB_C.cable_thickness:.1f} mm",
-        "",
-    ]
-
-    json_payload = []
-    for concept in concepts:
-        dims = " x ".join(f"{value:.2f}" for value in concept.dimensions_mm)
-        lines.extend(
-            [
-                f"## {concept.spec.title}",
-                "",
-                f"- Form note: {FORM_NOTES[concept.spec.form]}",
-                f"- Overall dimensions: {dims} mm",
-                f"- Insertion / removal: {concept.insertion_note}",
-                f"- Firm plug retention: {concept.plug_retention_note}",
-                f"- Moderate housing retention: {concept.housing_retention_note}",
-                f"- Better suited for: {concept.material_note}",
-                f"- STEP: `{concept.step_path.name}`",
-                f"- STL: `{concept.stl_path.name}`",
-                "",
-            ]
-        )
-        json_payload.append(
-            {
-                "slug": concept.spec.slug,
-                "title": concept.spec.title,
-                "form": concept.spec.form,
-                "retention_style": concept.spec.retention_style,
-                "material_profile": concept.spec.material_profile.label,
-                "dimensions_mm": concept.dimensions_mm,
-                "insertion_note": concept.insertion_note,
-                "plug_retention_note": concept.plug_retention_note,
-                "housing_retention_note": concept.housing_retention_note,
-                "material_note": concept.material_note,
-                "step_path": str(concept.step_path),
-                "stl_path": str(concept.stl_path),
-            }
-        )
-
-    md_path.write_text("\n".join(lines), encoding="utf-8")
-    json_path.write_text(json.dumps(json_payload, indent=2), encoding="utf-8")
+def write_manifest(concepts: list[GeneratedConcept], output_dir: Path, variant="compact") -> None:
+    if variant == "curved-side-by-side-press-fit":
+        write_curved_side_by_side_manifest(concepts[0], output_dir)
+        return
+    if variant == "side-by-side-press-fit":
+        write_side_by_side_manifest(concepts[0], output_dir)
+        return
+    if variant == "curved-press-fit":
+        write_curved_manifest(concepts[0], output_dir)
+        return
+    payload = []
+    lines = ["# Compact USB-C retainers — revision 2", "",
+             "Three separate one-piece holders. Do not assemble them together.", "",
+             "Plate, left to right: **#3 press-fit · #5 side-entry · #9 ribbed push-in**.",
+             "Centers: (92,128), (128,128), (164,128) mm; 12 mm gaps.", "",
+             "Bodies: 24 × 17 × 8.4 mm. Housing capture: 3.2 mm per end. "
+             "Pocket depth: 10.8 mm per end. Center divider: 2.4 mm.",
+             "Metal envelope: 6.8 × 8.5 × 2.8 mm. Plastic housing: 12 mm wide × 6.4 mm thick.",
+             "A1 / 0.4 mm / Generic PLA / 0.20 mm Standard / Textured PEI. Print flat.",
+             "Actual insertion force, grip, and fatigue require testing with your cable.", ""]
+    for concept, center in zip(concepts, PLATE_CENTERS, strict=True):
+        spec = concept.spec
+        item = dict(original_id=spec.original_id, slug=spec.slug, title=spec.title,
+                    retention_style=spec.retention_style, dimensions_mm=concept.dimensions_mm,
+                    volume_mm3=round(concept.volume_mm3, 3), housing_capture_mm=HOUSING_CAPTURE,
+                    pocket_depth_mm=POCKET_DEPTH, center_divider_mm=round(CENTER_DIVIDER, 3),
+                    plug_cavity_width_height_mm=[USB_C.plug_width + spec.plug_clearance,
+                                                USB_C.plug_thickness + spec.plug_clearance],
+                    housing_cavity_width_height_mm=[USB_C.housing_width + spec.housing_clearance,
+                                                   USB_C.housing_thickness + spec.housing_clearance],
+                    plate_center_xy_mm=center, insertion_note=spec.insertion_note,
+                    retention_note=spec.retention_note,
+                    step_path=str(concept.step_path.relative_to(output_dir)),
+                    stl_path=str(concept.stl_path.relative_to(output_dir)))
+        if spec.retention_style == "press_fit":
+            item.update(mouth_width_height_mm=[11.25, 5.65], throat_depth_mm=THROAT_LENGTH,
+                        relief_slot_width_mm=RELIEF_WIDTH)
+        if spec.retention_style == "side_entry":
+            item.update(side_housing_channel_height_mm=6.65, detent_gap_mm=6.25,
+                        inward_seating_travel_mm=SIDE_SEATING_TRAVEL,
+                        metal_side_channel_end_depth_mm=SIDE_TIP_CHANNEL_END)
+        if spec.retention_style == "push_socket":
+            item.update(rib_projection_mm=RIDGE_HEIGHT, rib_base_mm=RIDGE_BASE,
+                        rib_span_mm=RIDGE_SPAN, rib_depths_mm=RIDGE_CENTERS,
+                        rib_axis="vertical side-wall ribs, rooted in floor and roof",
+                        ribbed_housing_width_gap_mm=11.95)
+        payload.append(item)
+        lines += [f"## {spec.title}", "", f"- Use: {spec.insertion_note}",
+                  f"- Retention: {spec.retention_note}",
+                  f"- STEP: `{item['step_path']}`", f"- STL: `{item['stl_path']}`", ""]
+    (output_dir / "concepts.json").write_text(json.dumps(payload, indent=2) + "\n")
+    (output_dir / "concepts.md").write_text("\n".join(lines) + "\n")
+    write_plate_map(output_dir)
 
 
-def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool = True) -> list[GeneratedConcept]:
+def write_curved_side_by_side_manifest(concept: GeneratedConcept, output_dir: Path) -> None:
+    spec, config = concept.spec, CURVED_SIDE_BY_SIDE_BODY
+    minimums = curved_side_by_side_minimums()
+    dimensions, transforms = print_geometry("curved-side-by-side-press-fit")
+    item = dict(original_id=3, variant_id="3D", slug=spec.slug, title=spec.title,
+                retention_style=spec.retention_style, dimensions_mm=concept.dimensions_mm,
+                volume_mm3=round(concept.volume_mm3, 3), bend_degrees=BEND_DEGREES,
+                socket_tilt_degrees=BEND_DEGREES/2, centerline_radius_mm=curved_side_by_side_radius(),
+                local_body_thickness_mm=config.thickness, lane_pitch_mm=LANE_PITCH,
+                socket_axes_y_mm=[-LANE_PITCH/2, LANE_PITCH/2], minimum_nominal_wall_mm=MIN_WALL,
+                geometry_minimums=minimums, pocket_depth_mm=POCKET_DEPTH, housing_capture_mm=HOUSING_CAPTURE,
+                plug_cavity_width_height_mm=[8.65, 2.95], housing_cavity_width_height_mm=[12.2, 6.6],
+                mouth_width_height_mm=[11.25, 5.65], throat_depth_mm=THROAT_LENGTH,
+                throat_transition_overlap_mm=0.15, relief_slot_width_mm=RELIEF_WIDTH,
+                relief_slot_end_depth_mm=RELIEF_END, corner_radius_mm=config.corner_radius,
+                edge_fillet_mm=config.edge_fillet, plate_center_xy_mm=[128, 128],
+                print_rotation_y_degrees=CURVED_SIDE_BY_SIDE_PRINT_ANGLE,
+                print_dimensions_mm=dimensions, print_transform=transforms[0],
+                infill_density_percent=20, infill_pattern="gyroid", wall_loops=3,
+                top_shell_layers=5, bottom_shell_layers=5, shell_thickness_mm=1,
+                supports_enabled=False, insertion_note=spec.insertion_note, retention_note=spec.retention_note,
+                step_path=str(concept.step_path.relative_to(output_dir)),
+                stl_path=str(concept.stl_path.relative_to(output_dir)))
+    (output_dir / "concepts.json").write_text(json.dumps([item], indent=2)+"\n")
+    (output_dir / "concepts.md").write_text(
+        f"# {spec.title}\n\n"
+        f"Body: {concept.dimensions_mm[0]} × {concept.dimensions_mm[1]} × {concept.dimensions_mm[2]} mm. "
+        "Concave wrist face, convex outer face; local radial thickness 9.4 mm.\n\n"
+        f"Centerline radius: {item['centerline_radius_mm']:.3f} mm. Socket lanes: ±6.5 mm; "
+        "7.5° tilt each, 15° total. The sockets remain straight and open from opposite ends.\n\n"
+        f"{spec.insertion_note}\n\n"
+        "Reference #3 fit: metal 8.65 × 2.95 mm; housing 12.20 × 6.60 mm; mouth 11.25 × 5.65 mm; "
+        "10.8 mm blind pocket, 3.2 mm capture, 0.8 mm nominal throat with 0.15 mm overlap, "
+        "and unchanged 0.8 mm relief slots. All dimensions are measured in the socket's local frame.\n\n"
+        f"Minimum inter-lane void separation: {minimums['inter_lane_void_separation_mm']:.3f} mm; "
+        f"enclosed wall: {minimums['enclosed_wall_mm']:.3f} mm; "
+        f"closed end wall: {minimums['closed_end_wall_mm']:.3f} mm.\n\n"
+        "Print on the flat negative-X end face, rotated −82.5° about Y. Center: (128,128) mm. "
+        "A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI; no supports; "
+        "20% gyroid, 3 walls, 5 top and bottom layers with 1 mm shell thickness.\n\n"
+        "Physical acceptance: both plugs retain #3's usable fit independently, the curve seats comfortably "
+        "on the wrist, and insertion causes no cracking or separation. These require a physical print test.\n")
+    part = build_part(spec)
+    removed = make_curved_side_by_side_body()-part
+    voids = list(removed.solids()) if hasattr(removed, 'solids') else [s for p in removed for s in p.solids()]
+    assert len(voids) == 6, "Expected two independent sockets and four separate relief slots"
+    validation = dict(valid=part.is_valid, solid_count=len(part.solids()),
+                      dimensions_mm=concept.dimensions_mm, independent_removed_void_count=len(voids),
+                      bend_degrees=BEND_DEGREES, local_radial_thickness_mm=config.thickness, **minimums)
+    (output_dir / "geometry_validation.json").write_text(json.dumps(validation, indent=2)+"\n")
+    from preview_curved_side_by_side import write_plate_map
+    write_plate_map(part, output_dir)
+
+
+def write_side_by_side_manifest(concept: GeneratedConcept, output_dir: Path) -> None:
+    spec = concept.spec
+    separation, wall = side_by_side_minimums()
+    dimensions, transforms = print_geometry("side-by-side-press-fit")
+    item = dict(original_id=3, variant_id="3C", slug=spec.slug, title=spec.title,
+                retention_style=spec.retention_style, dimensions_mm=concept.dimensions_mm,
+                volume_mm3=round(concept.volume_mm3, 3), lane_pitch_mm=LANE_PITCH,
+                socket_axes_y_mm=[-LANE_PITCH/2, LANE_PITCH/2],
+                pocket_depth_mm=POCKET_DEPTH, housing_capture_mm=HOUSING_CAPTURE,
+                closed_end_wall_mm=SIDE_BY_SIDE_BODY.length-POCKET_DEPTH,
+                minimum_inter_lane_void_separation_mm=separation,
+                enclosed_relief_wall_min_mm=wall, minimum_nominal_wall_mm=MIN_WALL,
+                plug_cavity_width_height_mm=[8.65, 2.95], housing_cavity_width_height_mm=[12.2, 6.6],
+                mouth_width_height_mm=[11.25, 5.65], throat_depth_mm=THROAT_LENGTH,
+                throat_transition_overlap_mm=0.15, relief_slot_width_mm=RELIEF_WIDTH,
+                corner_radius_mm=SIDE_BY_SIDE_BODY.corner_radius, edge_fillet_mm=SIDE_BY_SIDE_BODY.edge_fillet,
+                plate_center_xy_mm=[128, 128], print_dimensions_mm=dimensions,
+                print_transform=transforms[0], insertion_note=spec.insertion_note,
+                retention_note=spec.retention_note,
+                step_path=str(concept.step_path.relative_to(output_dir)),
+                stl_path=str(concept.stl_path.relative_to(output_dir)))
+    (output_dir / "concepts.json").write_text(json.dumps([item], indent=2)+"\n")
+    (output_dir / "concepts.md").write_text(
+        f"# {spec.title}\n\n"
+        "Flat body: 13 × 30 × 8.4 mm. Two parallel sockets, 13 mm apart, entered from opposite ends.\n\n"
+        f"{spec.insertion_note}\n\n"
+        "Each lane preserves #3's straight socket geometry: metal 8.65 × 2.95 mm, housing 12.20 × 6.60 mm, "
+        "mouth 11.25 × 5.65 mm, nominal throat 0.8 mm with the existing 0.15 mm transition overlap, "
+        "and 0.8 mm relief slots. Pocket depth: 10.8 mm. Housing capture: 3.2 mm.\n\n"
+        f"Closed end walls: {item['closed_end_wall_mm']:.1f} mm. Minimum inter-lane void separation: "
+        f"{separation:.3f} mm. Minimum enclosed relief-slot wall: {wall:.3f} mm.\n\n"
+        "Print flat at (128, 128) mm: A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI; supports disabled.\n\n"
+        "Physical acceptance: both plugs retain #3's usable fit independently, stay seated when the other "
+        "is inserted or removed, and cause no cracking around the shared structure. These require a print test.\n")
+    (output_dir / "plate_map.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="700" height="520" viewBox="0 0 700 520">'
+        '<rect width="700" height="520" fill="white"/>'
+        '<g font-family="Arial,sans-serif" fill="#173329" text-anchor="middle">'
+        '<text x="350" y="40" font-size="22">#3C — A1 plate, top view</text>'
+        '<rect x="285" y="90" width="130" height="300" rx="8" fill="#d8eee0" stroke="#327449"/>'
+        '<text x="350" y="245" font-size="28">#3C</text>'
+        '<text x="350" y="440" font-size="17">Centered at (128, 128) mm · print flat</text>'
+        '<text x="350" y="475" font-size="17">13 × 30 mm footprint · 8.4 mm print height</text>'
+        '</g></svg>\n')
+
+
+def curved_divider_thickness() -> float:
+    pockets = [curved_socket_transform(x_prism(side, PLUG_START, POCKET_DEPTH, 8.65, 2.95), side)
+               for side in (-1, 1)]
+    return pockets[0].distance_to(pockets[1])
+
+
+@lru_cache(maxsize=1)
+def curved_minimum_enclosed_wall() -> float:
+    """Exact distance from each enclosed relief void to the outside CAD faces."""
+    body = make_curved_body()
+    reliefs = [curved_socket_transform(
+        x_prism(side, THROAT_LENGTH, RELIEF_END, RELIEF_WIDTH, BODY.thickness-2*MIN_WALL,
+                center_y=direction*7.05), side)
+        for side in (-1, 1) for direction in (-1, 1)]
+    return min(relief.distance_to(face) for relief in reliefs for face in body.faces())
+
+
+def write_curved_manifest(concept: GeneratedConcept, output_dir: Path) -> None:
+    spec = concept.spec
+    print_dimensions, transforms = print_geometry("curved-press-fit")
+    item = dict(original_id=3, variant_id="3B", slug=spec.slug, title=spec.title,
+                retention_style=spec.retention_style, dimensions_mm=concept.dimensions_mm,
+                volume_mm3=round(concept.volume_mm3, 3), bend_degrees=BEND_DEGREES,
+                socket_tilt_degrees=BEND_DEGREES / 2, centerline_radius_mm=curved_radius(),
+                local_body_thickness_mm=BODY.thickness, minimum_nominal_wall_mm=MIN_WALL,
+                end_corner_radius_mm=CURVED_END_RADIUS, edge_fillet_mm=BODY.edge_fillet,
+                enclosed_relief_wall_min_mm=curved_minimum_enclosed_wall(),
+                housing_capture_mm=HOUSING_CAPTURE, pocket_depth_mm=POCKET_DEPTH,
+                center_divider_min_mm=curved_divider_thickness(),
+                plug_cavity_width_height_mm=[8.65, 2.95], housing_cavity_width_height_mm=[12.2, 6.6],
+                mouth_width_height_mm=[11.25, 5.65], throat_depth_mm=THROAT_LENGTH,
+                relief_slot_width_mm=RELIEF_WIDTH, plate_center_xy_mm=[128, 128],
+                print_dimensions_mm=print_dimensions, print_transform=transforms[0],
+                insertion_note=spec.insertion_note, retention_note=spec.retention_note,
+                step_path=str(concept.step_path.relative_to(output_dir)),
+                stl_path=str(concept.stl_path.relative_to(output_dir)))
+    (output_dir / "concepts.json").write_text(json.dumps([item], indent=2) + "\n")
+    (output_dir / "concepts.md").write_text(
+        f"# {spec.title}\n\n"
+        f"Body: {concept.dimensions_mm[0]} × {concept.dimensions_mm[1]} × {concept.dimensions_mm[2]} mm. "
+        "15° total bend; each straight socket tilts 7.5°. The concave underside faces the wrist.\n\n"
+        f"Finished centerline arc radius: {curved_radius():.3f} mm. "
+        f"Minimum central pocket separation: {item['center_divider_min_mm']:.3f} mm.\n\n"
+        "The winning #3 mouth, cavity, 0.8 mm throat, relief slots, 10.8 mm pocket depth, "
+        "and 3.2 mm housing capture are preserved in each socket's local frame.\n\n"
+        f"{spec.insertion_note}\n\n"
+        "Print on the flat long side: the original 17 mm width becomes print height. "
+        "A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI; supports disabled.\n\n"
+        "Physical acceptance: retain #3's fit, improve wrist seating, and show no central cracking "
+        "or separation during insertion. Grip, comfort and fatigue require a physical print test.\n")
+    height = print_dimensions[1]
+    (output_dir / "plate_map.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="700" height="300" viewBox="0 0 700 300">'
+        '<rect width="700" height="300" fill="white"/>'
+        '<g font-family="Arial,sans-serif" fill="#173329" text-anchor="middle">'
+        '<text x="350" y="35" font-size="21">#3B — A1 plate, top view</text>'
+        f'<rect x="230" y="95" width="240" height="{height*10:.2f}" rx="12" fill="#d8eee0" stroke="#327449"/>'
+        '<text x="350" y="150" font-size="28">#3B</text>'
+        '<text x="350" y="240" font-size="17">Centered at (128, 128) mm · printed on its flat long side</text>'
+        '<text x="350" y="273" font-size="16">24 mm long · 17 mm print height · 15° total bend</text>'
+        '</g></svg>\n')
+
+
+def write_plate_map(output_dir: Path) -> None:
+    svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">',
+           '<rect width="900" height="260" fill="#ffffff"/>',
+           '<g font-family="Arial,sans-serif" fill="#173329" text-anchor="middle">',
+           '<text x="450" y="28" font-size="18">Compact v2 — top view, back of plate at top</text>']
+    for spec, (cx, _) in zip(build_concepts(), PLATE_CENTERS, strict=True):
+        x = 450 + (cx - 128) * 7
+        svg += [f'<rect x="{x - 84}" y="65" width="168" height="119" rx="11.2" '
+                'fill="#d8eee0" stroke="#327449" stroke-width="2"/>',
+                f'<text x="{x}" y="132" font-size="28">#{spec.original_id}</text>',
+                f'<text x="{x}" y="208" font-size="17">{spec.title.split("Compact ")[1]}</text>']
+    svg += ['<text x="450" y="246" font-size="16">Front edge / closest to you · 12 mm gaps</text>',
+            '</g></svg>']
+    (output_dir / "plate_map.svg").write_text("\n".join(svg) + "\n")
+
+
+def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool = True,
+             variant: str = "compact") -> list[GeneratedConcept]:
     output_dir.mkdir(parents=True, exist_ok=True)
-    step_dir = output_dir / "step"
-    stl_dir = output_dir / "stl"
-    step_dir.mkdir(exist_ok=True)
-    stl_dir.mkdir(exist_ok=True)
-
-    generated: list[GeneratedConcept] = []
-    for spec in build_concepts():
+    for subdir in ("step", "stl"):
+        (output_dir / subdir).mkdir(exist_ok=True)
+    generated = []
+    for spec in build_concepts(variant):
         part = build_part(spec)
-        step_path = step_dir / f"{spec.slug}.step"
-        stl_path = stl_dir / f"{spec.slug}.stl"
-
+        step_path = output_dir / "step" / f"{spec.slug}.step"
+        stl_path = output_dir / "stl" / f"{spec.slug}.stl"
         if export_step_file:
             export_step(part, step_path)
         if export_mesh:
-            export_stl(part, stl_path)
-
-        generated.append(
-            GeneratedConcept(
-                spec=spec,
-                dimensions_mm=rounded_dimensions(part),
-                insertion_note=INSERTION_NOTES[spec.retention_style],
-                plug_retention_note=PLUG_RETENTION_NOTES[spec.retention_style],
-                housing_retention_note=HOUSING_RETENTION_NOTES[spec.retention_style],
-                material_note=spec.material_profile.material_note,
-                step_path=step_path,
-                stl_path=stl_path,
-            )
-        )
-
-    write_manifest(generated, output_dir)
+            export_stl(part, stl_path, tolerance=0.02, angular_tolerance=0.1)
+        generated.append(GeneratedConcept(spec, rounded_dimensions(part), part.volume, step_path, stl_path))
+        if variant == "curved-press-fit":
+            from preview_curved import write_preview
+            write_preview(part, output_dir)
+        elif variant == "side-by-side-press-fit":
+            from preview_side_by_side import write_preview
+            write_preview(part, output_dir)
+        elif variant == "curved-side-by-side-press-fit":
+            from preview_curved_side_by_side import write_preview
+            write_preview(part, output_dir)
+    write_manifest(generated, output_dir, variant)
     return generated
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Generate build123d concept models for a wearable USB-C cable retainer."
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=Path("generated"),
-        help="Directory for generated STEP, STL, and manifest outputs.",
-    )
-    parser.add_argument(
-        "--skip-stl",
-        action="store_true",
-        help="Skip STL export if only solid models are needed.",
-    )
-    parser.add_argument(
-        "--skip-step",
-        action="store_true",
-        help="Skip STEP export if only meshes are needed.",
-    )
+    parser = argparse.ArgumentParser(description="Generate compact USB-C cable retainers and #3B/#3C/#3D variations.")
+    parser.add_argument("--variant", choices=VARIANTS, default="compact")
+    parser.add_argument("--output-dir", type=Path,
+                        help="Output folder (compact: generated/v2; #3B: generated/v3; #3C: generated/v4; #3D: generated/v5).")
+    parser.add_argument("--skip-stl", action="store_true", help="Skip STL export.")
+    parser.add_argument("--skip-step", action="store_true", help="Skip STEP export.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    generated = generate(
-        output_dir=args.output_dir,
-        export_mesh=not args.skip_stl,
-        export_step_file=not args.skip_step,
-    )
-
-    print(f"Generated {len(generated)} concepts in {args.output_dir.resolve()}")
+    output_dir = args.output_dir or default_output_dir(args.variant)
+    generated = generate(output_dir, not args.skip_stl, not args.skip_step, args.variant)
+    print(f"Generated {len(generated)} models in {output_dir.resolve()}")
     for concept in generated:
-        dims = " x ".join(f"{value:.2f}" for value in concept.dimensions_mm)
-        print(f"- {concept.spec.slug}: {dims} mm")
-    print(f"Concept manifest: {(args.output_dir / 'concepts.md').resolve()}")
+        print(f"- {concept.spec.title}: {concept.dimensions_mm} mm; {concept.volume_mm3:.1f} mm³")
     return 0
 
 

@@ -1,0 +1,114 @@
+[
+  {
+    "original_id": 3,
+    "slug": "03_compact_press_fit",
+    "title": "#3 Compact press-fit",
+    "retention_style": "press_fit",
+    "dimensions_mm": [
+      24.0,
+      17.0,
+      8.4
+    ],
+    "volume_mm3": 2409.036,
+    "housing_capture_mm": 3.2,
+    "pocket_depth_mm": 10.8,
+    "center_divider_mm": 2.4,
+    "plug_cavity_width_height_mm": [
+      8.65,
+      2.9499999999999997
+    ],
+    "housing_cavity_width_height_mm": [
+      12.2,
+      6.6000000000000005
+    ],
+    "plate_center_xy_mm": [
+      92.0,
+      128.0
+    ],
+    "insertion_note": "Push plugs into opposite ends, metal tips toward the center. Only the front 3.2 mm of each plastic housing is captured. Test PLA flex without forcing it.",
+    "retention_note": "Original #3 cavity/mouth widths and heights, a shorter 0.8 mm throat, and 0.8 mm flanking relief slots.",
+    "step_path": "step/03_compact_press_fit.step",
+    "stl_path": "stl/03_compact_press_fit.stl",
+    "mouth_width_height_mm": [
+      11.25,
+      5.65
+    ],
+    "throat_depth_mm": 0.8,
+    "relief_slot_width_mm": 0.8
+  },
+  {
+    "original_id": 5,
+    "slug": "05_compact_side_entry",
+    "title": "#5 Compact side-entry",
+    "retention_style": "side_entry",
+    "dimensions_mm": [
+      24.0,
+      17.0,
+      8.4
+    ],
+    "volume_mm3": 2243.342,
+    "housing_capture_mm": 3.2,
+    "pocket_depth_mm": 10.8,
+    "center_divider_mm": 2.4,
+    "plug_cavity_width_height_mm": [
+      8.7,
+      3.0
+    ],
+    "housing_cavity_width_height_mm": [
+      12.25,
+      6.65
+    ],
+    "plate_center_xy_mm": [
+      128.0,
+      128.0
+    ],
+    "insertion_note": "Slide the housing and metal tip sideways through the stepped opening, then move the plug 0.8 mm inward. Reverse that move before sliding out.",
+    "retention_note": "Mirrored side entrances with lead-ins, localized rounded housing detents (6.25 mm gap), and a closed side wall capturing the last 0.8 mm of the tip.",
+    "step_path": "step/05_compact_side_entry.step",
+    "stl_path": "stl/05_compact_side_entry.stl",
+    "side_housing_channel_height_mm": 6.65,
+    "detent_gap_mm": 6.25,
+    "inward_seating_travel_mm": 0.8,
+    "metal_side_channel_end_depth_mm": 9.2
+  },
+  {
+    "original_id": 9,
+    "slug": "09_compact_ribbed_push_in",
+    "title": "#9 Compact ribbed push-in",
+    "retention_style": "push_socket",
+    "dimensions_mm": [
+      24.0,
+      17.0,
+      8.4
+    ],
+    "volume_mm3": 2472.285,
+    "housing_capture_mm": 3.2,
+    "pocket_depth_mm": 10.8,
+    "center_divider_mm": 2.4,
+    "plug_cavity_width_height_mm": [
+      8.75,
+      3.05
+    ],
+    "housing_cavity_width_height_mm": [
+      12.35,
+      6.75
+    ],
+    "plate_center_xy_mm": [
+      164.0,
+      128.0
+    ],
+    "insertion_note": "Push each plug into an end. Rounded ribs grip the plastic housing; most of the housing remains exposed.",
+    "retention_note": "Two opposing rib pairs per end project 0.2 mm, span 8 mm, have 0.8 mm axial bases, and sit 1.3/2.5 mm inside the opening. Metal-tip pockets stay smooth.",
+    "step_path": "step/09_compact_ribbed_push_in.step",
+    "stl_path": "stl/09_compact_ribbed_push_in.stl",
+    "rib_projection_mm": 0.2,
+    "rib_base_mm": 0.8,
+    "rib_span_mm": 8.0,
+    "rib_depths_mm": [
+      1.3,
+      2.5
+    ],
+    "rib_axis": "vertical side-wall ribs, rooted in floor and roof",
+    "ribbed_housing_width_gap_mm": 11.95
+  }
+]

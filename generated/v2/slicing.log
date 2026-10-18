@@ -1,0 +1,8 @@
+[2026-10-17 10:39:02.124490] [0x00000001fe2fe300] [trace]   Initializing StaticPrintConfigs
+[2026-10-17 10:39:02.132645] [0x00000001fe2fe300] [warning] cli mode, Current BambuStudio Version 02.08.02.61
+[2026-10-17 10:39:02.278791] [0x00000001fe2fe300] [warning] run:2873, can not find system preset file: /Applications/BambuStudio.app/Contents/Resources/profiles/BBL/machine_full/Bambu Lab A1 0.4 nozzle.json 
+[2026-10-17 10:39:02.278821] [0x00000001fe2fe300] [warning] run:2895, can not find system preset file: /Applications/BambuStudio.app/Contents/Resources/profiles/BBL/process_full/0.20mm Standard @BBL A1.json 
+[2026-10-17 10:39:02.278842] [0x00000001fe2fe300] [warning] no filament colors found in projects
+[2026-10-17 10:39:02.279599] [0x00000001fe2fe300] [warning] load_nozzle_infos_with_compatibility: building nozzle list from filament map and volume types
+[2026-10-17 10:39:02.363419] [0x00000001fe2fe300] [warning] tree support default to organic support
+[2026-10-17 10:39:02.363456] [0x000000016be63000] [warning] tree support default to organic support

@@ -1,0 +1,46 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3C Side-by-side press-fit",
+      "minimum_mm": [
+        121.5,
+        113.0,
+        0.0
+      ],
+      "maximum_mm": [
+        134.5,
+        143.0,
+        8.4
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 924.1177368164062,
+  "filament_grams": 2.3538873195648193,
+  "project_contains_cached_gcode": false,
+  "layer_count": 42,
+  "feature_type_times": {
+    "Bottom surface": 17.023128509521484,
+    "Bridge": 37.02940368652344,
+    "Custom": 369.0316467285156,
+    "Flush": 25.0,
+    "Gap infill": 21.229454040527344,
+    "Inner wall": 58.799415588378906,
+    "Internal solid infill": 79.05907440185547,
+    "Outer wall": 109.5207748413086,
+    "Overhang wall": 1.5408000946044922,
+    "Sparse infill": 30.642072677612305,
+    "Top surface": 24.965553283691406,
+    "Travel": 167.19674682617188,
+    "Undefined": 150.2577667236328
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 18,
+  "maximum_bridge_start_distance_mm": 0.15312491789669172,
+  "maximum_bridge_end_distance_mm": 0.0
+}

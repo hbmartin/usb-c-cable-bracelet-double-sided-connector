@@ -1,0 +1,70 @@
+[
+  {
+    "original_id": 3,
+    "variant_id": "3C",
+    "slug": "03c_side_by_side_press_fit",
+    "title": "#3C Side-by-side press-fit",
+    "retention_style": "side_by_side_press_fit",
+    "dimensions_mm": [
+      13.0,
+      30.0,
+      8.4
+    ],
+    "volume_mm3": 2271.311,
+    "lane_pitch_mm": 13.0,
+    "socket_axes_y_mm": [
+      -6.5,
+      6.5
+    ],
+    "pocket_depth_mm": 10.8,
+    "housing_capture_mm": 3.2,
+    "closed_end_wall_mm": 2.1999999999999993,
+    "minimum_inter_lane_void_separation_mm": 1.0440306508910548,
+    "enclosed_relief_wall_min_mm": 0.7999999999999989,
+    "minimum_nominal_wall_mm": 0.8,
+    "plug_cavity_width_height_mm": [
+      8.65,
+      2.95
+    ],
+    "housing_cavity_width_height_mm": [
+      12.2,
+      6.6
+    ],
+    "mouth_width_height_mm": [
+      11.25,
+      5.65
+    ],
+    "throat_depth_mm": 0.8,
+    "throat_transition_overlap_mm": 0.15,
+    "relief_slot_width_mm": 0.8,
+    "corner_radius_mm": 0.8,
+    "edge_fillet_mm": 0.4,
+    "plate_center_xy_mm": [
+      128,
+      128
+    ],
+    "print_dimensions_mm": [
+      13,
+      30,
+      8.4
+    ],
+    "print_transform": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      128,
+      128,
+      4.2
+    ],
+    "insertion_note": "Push one plug into each opposite end, along the two parallel socket axes. The plugs' wide faces stay parallel to the top; cables exit opposite ends.",
+    "retention_note": "Winning #3 sockets, mouths, nominal throats and relief slots translated into two lanes 13 mm apart, with independent blind stops.",
+    "step_path": "step/03c_side_by_side_press_fit.step",
+    "stl_path": "stl/03c_side_by_side_press_fit.stl"
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "layer_count": 85,
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 29,
+  "maximum_bridge_start_distance_mm": 0.15312491789669172,
+  "maximum_bridge_end_distance_mm": 0.0012741699796948486,
+  "bridge_layers_mm": [
+    2.0,
+    3.4,
+    5.8,
+    7.6,
+    7.8,
+    13.0,
+    14.4,
+    14.8,
+    16.2
+  ],
+  "method": "Extruded line-width footprints; 0.05 mm inter-layer connectivity tolerance. Both bridge endpoints checked against previous-layer and same-layer paths deposited before that bridge. This is a toolpath check, not a physical bridging or retention test."
+}

@@ -104,14 +104,54 @@ def check_curved_side_by_side_openings(layers, footprints=None):
                                     'Extrusion footprint at the layer containing each 3D probe must clear it by 0.10 mm.')
 
 
-def write_review(path: Path, output_dir: Path, variant: str = 'curved-press-fit'):
+def check_right_angle_openings(layers, variant, fit='standard', footprints=None):
+    """Probe #3E's actual selected mouth and both measured interior cavity sizes."""
+    from right_angle import E, FITS, SAMPLES, COMBINED, INVERTED, combined_layout, layout, local_point
+    sample = variant == SAMPLES
+    _, transforms, _ = layout(variant)
+    profiles = list(FITS) if sample else [fit]
+    heights = sorted(layers)
+    if footprints is None:
+        footprints = {z: unary_union([LineString([a,b]).buffer(w/2,quad_segs=3)
+                                     for a,b,w,_ in segments]) for z,segments in layers.items()}
+    checked, minimum, blocked = 0, float('inf'), []
+    objects = (combined_layout() if variant == COMBINED else
+               [dict(sample=sample, fit=profile, transform=transform, inverted=variant==INVERTED)
+                for profile, transform in zip(profiles, transforms, strict=True)])
+    for obj in objects:
+        sample, profile, transform = obj['sample'], obj['fit'], obj['transform']
+        for side in ((-1,) if sample else (-1,1)):
+            for depth in (.25,.5,1,1.7,2.2,3.5,5,7,9.8,10.8):
+                width,height = FITS[profile] if depth < .65 else (E.base_cavity if depth < 2 else E.metal_cavity)
+                for y in (-(width/2-.45),0,width/2-.45):
+                    for z in (-(height/2-.45),0,height/2-.45):
+                        x,yy,zz=local_point(side,depth,y,z,sample,obj.get('inverted',False))
+                        point=(transform[0]*x+transform[6]*zz+transform[9],yy+transform[10],
+                               transform[2]*x+transform[8]*zz+transform[11])
+                        index=bisect_left(heights,point[2]-1e-7)
+                        assert 0 <= index < len(heights) and point[2]>=0, (profile,side,depth,point)
+                        layer=heights[index]
+                        clearance=Point(point[:2]).distance(footprints[layer])
+                        checked+=1
+                        minimum=min(minimum,clearance)
+                        if clearance < .1:
+                            blocked.append(dict(fit=profile,side=side,depth_mm=depth,local_yz_mm=[y,z],layer_z_mm=layer))
+    return dict(socket_clearance_probes_checked=checked,minimum_probe_clearance_to_extrusion_mm=minimum,
+                blocked_socket_core_probes=blocked,
+                socket_probe_method='Three by three core grid at ten depths per socket; 0.45 mm edge margin; '
+                                    'selected fit mouth and measured #3E cavities; require 0.10 mm path clearance.')
+
+
+def write_review(path: Path, output_dir: Path, variant: str = 'curved-press-fit', fit: str = 'standard'):
+    from right_angle import HOLDER, SAMPLES, COMBINED, INVERTED, combined_layout, layout
+    right_angle = variant in (HOLDER,SAMPLES,COMBINED,INVERTED)
     layers = read_layers(path)
     previous = None
     floating, bridge_starts, footprints = [], [], {}
     for height, segments in sorted(layers.items()):
         strokes = [LineString([a, b]).buffer(width/2, quad_segs=3) for a, b, width, _ in segments]
         footprint = unary_union(strokes)
-        if variant == 'curved-side-by-side-press-fit':
+        if variant == 'curved-side-by-side-press-fit' or right_angle:
             footprints[height] = footprint
         components = list(footprint.geoms) if footprint.geom_type == 'MultiPolygon' else [footprint]
         if previous is not None:
@@ -147,11 +187,29 @@ def write_review(path: Path, output_dir: Path, variant: str = 'curved-press-fit'
                          "This is a toolpath check, not a physical bridging or retention test.")
     if variant == 'curved-side-by-side-press-fit':
         report.update(check_curved_side_by_side_openings(layers, footprints))
+    if right_angle:
+        report.update(check_right_angle_openings(layers,variant,fit,footprints))
     (output_dir / 'toolpath_review.json').write_text(json.dumps(report, indent=2)+'\n')
     assert not floating, f'Unsupported layer islands: {floating}'
     assert report['maximum_bridge_start_distance_mm'] <= 0.25, report
     assert report['maximum_bridge_end_distance_mm'] <= 0.25, report
-    if variant == 'curved-side-by-side-press-fit':
+    if right_angle:
+        assert report['socket_clearance_probes_checked'] == (450 if variant==COMBINED else (270 if variant==SAMPLES else 180)), report
+        assert not report['blocked_socket_core_probes'], report['blocked_socket_core_probes']
+        dimensions,_,centers=layout(variant)
+        labels={.6:'Bed-facing mouths',.8:'Throat transitions',2.0:'Black-base seating shoulders',
+                6.2:'Relief-slot closures',11.2:'Bed-facing blind pocket closure',
+                14.0:'Closed rear wall' if variant==SAMPLES else 'Upper entry lip'}
+        title='#3E fit samples' if variant==SAMPLES else ('#3E Inverted' if variant==INVERTED else '#3E')
+        xlim=(centers[0][0]-dimensions[0]/2-1,centers[-1][0]+dimensions[0]/2+1)
+        ylim=(128-dimensions[1]/2-1,128+dimensions[1]/2+1)
+        row_height=4 if variant==SAMPLES else 5.2
+        if variant == COMBINED:
+            objects=combined_layout()
+            xlim=(objects[0]['center'][0]-objects[0]['dimensions'][0]/2-1,
+                  objects[-1]['center'][0]+objects[-1]['dimensions'][0]/2+1)
+            title, row_height='#3E holder + fit samples',4
+    elif variant == 'curved-side-by-side-press-fit':
         assert report['socket_clearance_probes_checked'] == 180, report
         assert not report['blocked_socket_core_probes'], report['blocked_socket_core_probes']
         labels = {.6: 'Lane A bed-facing mouth', .8: 'Lane A throat transition',
@@ -175,8 +233,10 @@ def write_review(path: Path, output_dir: Path, variant: str = 'curved-press-fit'
                   13.0: 'Metal-tip pocket roofs', 14.4: 'Upper entry lips',
                   14.8: 'Housing-pocket roofs', 16.2: 'Upper relief-slot roofs'}
         title, xlim, ylim, row_height = '#3B', (115, 141), (121.5, 134.5), 3.6
-    extras = ({.6, .8, 13.8, 14.4} if variant == 'curved-side-by-side-press-fit' else
+    extras = ({.6,.8,2.0,6.2,11.2,14.0} if right_angle else
+              ({.6, .8, 13.8, 14.4} if variant == 'curved-side-by-side-press-fit' else
               ({7.2} if variant in ('side-by-side-press-fit', 'comparison-3b-3c') else set()))
+              )
     reviewed = sorted(set(report['bridge_layers_mm']) | extras)
     selected = [(min(layers), 'First layer')] + [(z, labels.get(z, 'Bridge layer'))
                 for z in reviewed] + [(max(layers), 'Final layer')]

@@ -1,0 +1,62 @@
+[
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "gentle",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.969485
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 15.0,
+    "local_radial_thickness_mm": 7.6,
+    "curved_skin_wall_mm": 0.9240056588797165,
+    "enclosed_relief_wall_mm": 0.7999999999999989,
+    "enclosed_wall_mm": 0.7999999999999989,
+    "closed_end_wall_mm": 2.453272268938673,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.500000000000002
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.969485
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 15.0,
+    "local_radial_thickness_mm": 7.6,
+    "curved_skin_wall_mm": 0.9240056588797165,
+    "enclosed_relief_wall_mm": 0.7999999999999989,
+    "enclosed_wall_mm": 0.7999999999999989,
+    "closed_end_wall_mm": 2.453272268938673,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.500000000000002
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "firm",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.969485
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 15.0,
+    "local_radial_thickness_mm": 7.6,
+    "curved_skin_wall_mm": 0.9240056588797165,
+    "enclosed_relief_wall_mm": 0.7999999999999989,
+    "enclosed_wall_mm": 0.7999999999999989,
+    "closed_end_wall_mm": 2.453272268938673,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.500000000000002
+  }
+]

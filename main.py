@@ -40,6 +40,8 @@ class ConceptSpec:
     housing_clearance: float
     insertion_note: str
     retention_note: str
+    fit: str = "standard"
+    inverted_bend: bool = False
 
 
 @dataclass(frozen=True)
@@ -69,7 +71,9 @@ RIDGE_BASE = 0.8
 RIDGE_SPAN = 8.0
 RIDGE_CENTERS = (1.3, 2.5)
 PLATE_CENTERS = ((92.0, 128.0), (128.0, 128.0), (164.0, 128.0))
-VARIANTS = ("compact", "curved-press-fit", "side-by-side-press-fit", "curved-side-by-side-press-fit")
+VARIANTS = ("compact", "curved-press-fit", "side-by-side-press-fit", "curved-side-by-side-press-fit",
+            "right-angle-side-by-side-press-fit", "right-angle-fit-samples",
+            "right-angle-side-by-side-press-fit-inverted")
 BEND_DEGREES = 15.0
 HALF_BEND = radians(BEND_DEGREES / 2)
 CURVED_END_RADIUS = 0.8
@@ -79,8 +83,32 @@ CURVED_SIDE_BY_SIDE_BODY = FormConfig(length=15.2, width=30, thickness=9.4, corn
 CURVED_SIDE_BY_SIDE_PRINT_ANGLE = -82.5
 
 
-def build_concepts(variant: str = "compact") -> list[ConceptSpec]:
+def build_concepts(variant: str = "compact", fit: str = "standard") -> list[ConceptSpec]:
     """The three requested revisions; IDs refer to the original nine-part plate."""
+    if variant.startswith("right-angle-"):
+        from right_angle import FITS, SAMPLES, HOLDER, INVERTED
+        if fit not in FITS:
+            raise ValueError(f"Unknown #3E fit: {fit}")
+        if variant not in (HOLDER, SAMPLES, INVERTED):
+            raise ValueError(f"Unknown variant: {variant}")
+        sample = variant == SAMPLES
+        inverted = variant == INVERTED
+        return [ConceptSpec(3, f"03e_{'fit_sample' if sample else ('inverted_right_angle_side_by_side' if inverted else 'right_angle_side_by_side')}_{profile}",
+                            f"#3E {profile} fit sample" if sample else
+                            f"#3E {'Inverted ' if inverted else ''}15° right-angle side-by-side press-fit ({profile})",
+                            "right_angle_sample" if sample else "right_angle_holder", .15, .20,
+                            "Straight single-socket block: push along its axis; test gentle first." if sample else
+                            "Push along the parallel socket axes. The inverted 15° bend is between the lanes; "
+                            "pod rolls are −7.5° / +7.5° and the center dips with the same CAD top up. "
+                            "Mirror the right-angle plugs so the cable tails point outward. "
+                            "Capture 2 mm of black base, leaving 0.5 mm to the silver elbow." if inverted else
+                            "Push along the parallel socket axes. The 15° bend is between the lanes, "
+                            "with each pod rolled 7.5° about X. Wear the concave face toward the wrist; "
+                            "mirror the right-angle plugs so the cable tails point outward. "
+                            "Capture 2 mm of black base, leaving 0.5 mm to the silver elbow.",
+                            "Measured right-angle plug envelope with a trial press-fit throat. "
+                            "Test gentle first; stop if insertion requires force or causes cracking.", profile, inverted)
+                for profile in (FITS if sample else (fit,))]
     if variant == "curved-side-by-side-press-fit":
         return [ConceptSpec(3, "03d_curved_side_by_side_press_fit_15deg",
                             "#3D 15° curved side-by-side press-fit", "curved_side_by_side_press_fit", 0.15, 0.20,
@@ -210,6 +238,11 @@ def housing_retainers(spec: ConceptSpec) -> list:
 
 
 def build_part(spec: ConceptSpec):
+    if spec.retention_style in ("right_angle_holder", "right_angle_sample"):
+        from right_angle import build_holder, geometry_report
+        sample = spec.retention_style == "right_angle_sample"
+        geometry_report(spec.fit, sample, spec.inverted_bend)
+        return build_holder(spec.fit, sample, spec.inverted_bend)
     if spec.retention_style == "curved_side_by_side_press_fit":
         part = make_curved_side_by_side_body()
         for lane in curved_side_by_side_cutters():
@@ -427,15 +460,25 @@ def curved_side_by_side_minimums():
 
 def default_output_dir(variant: str) -> Path:
     return Path({"compact": "generated/v2", "curved-press-fit": "generated/v3",
-                 "side-by-side-press-fit": "generated/v4", "curved-side-by-side-press-fit": "generated/v5"}[variant])
+                 "side-by-side-press-fit": "generated/v4", "curved-side-by-side-press-fit": "generated/v5",
+                 "right-angle-side-by-side-press-fit": "generated/v6",
+                 "right-angle-fit-samples": "generated/v6/fit_samples",
+                 "right-angle-side-by-side-press-fit-inverted": "generated/v7"}[variant])
 
 
 def plate_centers(variant: str = "compact"):
+    if variant.startswith("right-angle-"):
+        from right_angle import layout
+        return layout(variant)[2]
     return PLATE_CENTERS if variant == "compact" else ((128.0, 128.0),)
 
 
 def print_geometry(variant: str = "compact"):
     """Expected dimensions and explicit 3MF transforms, with Z minimum on the bed."""
+    if variant.startswith("right-angle-"):
+        from right_angle import layout
+        dimensions, transforms, _ = layout(variant)
+        return dimensions, transforms
     if variant == "curved-side-by-side-press-fit":
         angle = radians(CURVED_SIDE_BY_SIDE_PRINT_ANGLE)
         c, s = cos(angle), sin(angle)
@@ -461,6 +504,10 @@ def rounded_dimensions(part) -> tuple[float, float, float]:
 
 
 def write_manifest(concepts: list[GeneratedConcept], output_dir: Path, variant="compact") -> None:
+    if variant.startswith("right-angle-"):
+        from right_angle import write_manifest as write_right_angle_manifest
+        write_right_angle_manifest(concepts, output_dir, variant)
+        return
     if variant == "curved-side-by-side-press-fit":
         write_curved_side_by_side_manifest(concepts[0], output_dir)
         return
@@ -695,12 +742,12 @@ def write_plate_map(output_dir: Path) -> None:
 
 
 def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool = True,
-             variant: str = "compact") -> list[GeneratedConcept]:
+             variant: str = "compact", fit: str = "standard") -> list[GeneratedConcept]:
     output_dir.mkdir(parents=True, exist_ok=True)
     for subdir in ("step", "stl"):
         (output_dir / subdir).mkdir(exist_ok=True)
     generated = []
-    for spec in build_concepts(variant):
+    for spec in build_concepts(variant, fit):
         part = build_part(spec)
         step_path = output_dir / "step" / f"{spec.slug}.step"
         stl_path = output_dir / "stl" / f"{spec.slug}.stl"
@@ -719,23 +766,32 @@ def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool 
             from preview_curved_side_by_side import write_preview
             write_preview(part, output_dir)
     write_manifest(generated, output_dir, variant)
+    if variant.startswith("right-angle-"):
+        from preview_right_angle import write_preview, write_plate_map
+        write_preview(generated, output_dir, variant)
+        write_plate_map(generated, output_dir, variant)
     return generated
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate compact USB-C cable retainers and #3B/#3C/#3D variations.")
+    parser = argparse.ArgumentParser(description="Generate compact USB-C cable retainers and #3B–#3E variations.")
     parser.add_argument("--variant", choices=VARIANTS, default="compact")
+    parser.add_argument("--fit", choices=("gentle", "standard", "firm"), default="standard",
+                        help="Trial retaining-mouth fit for the #3E holder; samples always include all three.")
     parser.add_argument("--output-dir", type=Path,
-                        help="Output folder (compact: generated/v2; #3B: generated/v3; #3C: generated/v4; #3D: generated/v5).")
+                        help="Output folder (compact: v2; #3B: v3; #3C: v4; #3D: v5; #3E: v6; #3E inverted: v7, under generated/).")
     parser.add_argument("--skip-stl", action="store_true", help="Skip STL export.")
     parser.add_argument("--skip-step", action="store_true", help="Skip STEP export.")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.fit != "standard" and args.variant not in ("right-angle-side-by-side-press-fit", "right-angle-side-by-side-press-fit-inverted"):
+        parser.error("--fit is only selectable for right-angle-side-by-side-press-fit")
+    return args
 
 
 def main() -> int:
     args = parse_args()
     output_dir = args.output_dir or default_output_dir(args.variant)
-    generated = generate(output_dir, not args.skip_stl, not args.skip_step, args.variant)
+    generated = generate(output_dir, not args.skip_stl, not args.skip_step, args.variant, args.fit)
     print(f"Generated {len(generated)} models in {output_dir.resolve()}")
     for concept in generated:
         print(f"- {concept.spec.title}: {concept.dimensions_mm} mm; {concept.volume_mm3:.1f} mm³")

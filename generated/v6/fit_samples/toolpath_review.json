@@ -1,0 +1,16 @@
+{
+  "layer_count": 73,
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 6,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.0,
+  "bridge_layers_mm": [
+    11.4,
+    13.8
+  ],
+  "method": "Extruded line-width footprints; 0.05 mm inter-layer connectivity tolerance. Both bridge endpoints checked against previous-layer and same-layer paths deposited before that bridge. This is a toolpath check, not a physical bridging or retention test.",
+  "socket_clearance_probes_checked": 270,
+  "minimum_probe_clearance_to_extrusion_mm": 0.43499999999998806,
+  "blocked_socket_core_probes": [],
+  "socket_probe_method": "Three by three core grid at ten depths per socket; 0.45 mm edge margin; selected fit mouth and measured #3E cavities; require 0.10 mm path clearance."
+}

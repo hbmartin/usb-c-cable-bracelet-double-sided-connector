@@ -1,0 +1,93 @@
+{
+  "variant": "right-angle-fit-samples",
+  "gap_mm": 12,
+  "objects": [
+    {
+      "name": "#3E gentle fit sample",
+      "fit": "gentle",
+      "center_xy_mm": [
+        108.4,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        108.4,
+        128.0,
+        7.3
+      ],
+      "source_stl": "stl/03e_fit_sample_gentle.stl",
+      "source_sha256": "89f83b6de59fb68161d159a231fe21020e3be43f4f7689b370a8fcf34d8811f1"
+    },
+    {
+      "name": "#3E standard fit sample",
+      "fit": "standard",
+      "center_xy_mm": [
+        128.0,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        128.0,
+        128.0,
+        7.3
+      ],
+      "source_stl": "stl/03e_fit_sample_standard.stl",
+      "source_sha256": "6a6598d7a0a68a870a5deb9b744f88f472bde0be1dc0f34e6cbf3e36537c7151"
+    },
+    {
+      "name": "#3E firm fit sample",
+      "fit": "firm",
+      "center_xy_mm": [
+        147.6,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        147.6,
+        128.0,
+        7.3
+      ],
+      "source_stl": "stl/03e_fit_sample_firm.stl",
+      "source_sha256": "78de596105b27873e4cf228f31874a0db529be813d9a9d9cf29bf38685c32b43"
+    }
+  ]
+}

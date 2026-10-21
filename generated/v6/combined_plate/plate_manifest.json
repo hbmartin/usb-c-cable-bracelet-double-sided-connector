@@ -1,0 +1,126 @@
+{
+  "project": "corrected_3E_and_fit_samples_A1_PLA.3mf",
+  "gap_mm": 12,
+  "objects": [
+    {
+      "name": "#3E 15\u00b0 right-angle side-by-side press-fit (standard)",
+      "fit": "standard",
+      "quantity": 1,
+      "source_stl": "generated/v6/stl/03e_right_angle_side_by_side_standard.stl",
+      "source_sha256": "b59d279546be0aa904bd9e1601bf9361d3772dfcf63e1a4c12d27cf41d053401",
+      "center_xy_mm": [
+        98.6,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        9.19787862399859,
+        27.2000001,
+        14.600000200000004
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        97.8010606880007,
+        128.0,
+        7.300000100000001
+      ]
+    },
+    {
+      "name": "#3E gentle fit sample",
+      "fit": "gentle",
+      "quantity": 1,
+      "source_stl": "generated/v6/fit_samples/stl/03e_fit_sample_gentle.stl",
+      "source_sha256": "89f83b6de59fb68161d159a231fe21020e3be43f4f7689b370a8fcf34d8811f1",
+      "center_xy_mm": [
+        118.9989393119993,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        118.9989393119993,
+        128.0,
+        7.3
+      ]
+    },
+    {
+      "name": "#3E standard fit sample",
+      "fit": "standard",
+      "quantity": 1,
+      "source_stl": "generated/v6/fit_samples/stl/03e_fit_sample_standard.stl",
+      "source_sha256": "6a6598d7a0a68a870a5deb9b744f88f472bde0be1dc0f34e6cbf3e36537c7151",
+      "center_xy_mm": [
+        138.59893931199932,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        138.59893931199932,
+        128.0,
+        7.3
+      ]
+    },
+    {
+      "name": "#3E firm fit sample",
+      "fit": "firm",
+      "quantity": 1,
+      "source_stl": "generated/v6/fit_samples/stl/03e_fit_sample_firm.stl",
+      "source_sha256": "78de596105b27873e4cf228f31874a0db529be813d9a9d9cf29bf38685c32b43",
+      "center_xy_mm": [
+        158.1989393119993,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        7.600000000000002,
+        14.400000000000002,
+        14.600000000000001
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        158.1989393119993,
+        128.0,
+        7.3
+      ]
+    }
+  ]
+}

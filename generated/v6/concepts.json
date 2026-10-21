@@ -1,0 +1,162 @@
+[
+  {
+    "original_id": 3,
+    "variant_id": "3E",
+    "slug": "03e_right_angle_side_by_side_standard",
+    "title": "#3E 15\u00b0 right-angle side-by-side press-fit (standard)",
+    "fit": "standard",
+    "sample": false,
+    "dimensions_mm": [
+      14.6,
+      27.2,
+      9.198
+    ],
+    "volume_mm3": 2288.039,
+    "measured_metal_width_height_length_mm": [
+      8.1,
+      2.3,
+      8.4
+    ],
+    "measured_base_width_height_length_mm": [
+      9.9,
+      4.7,
+      2.5
+    ],
+    "plug_cavity_width_height_mm": [
+      8.25,
+      2.45
+    ],
+    "housing_cavity_width_height_mm": [
+      10.1,
+      4.9
+    ],
+    "mouth_width_height_mm": [
+      9.6,
+      4.4
+    ],
+    "total_mouth_interference_mm": 0.3,
+    "pocket_depth_mm": 11.200000000000001,
+    "housing_capture_mm": 2.0,
+    "tip_clearance_mm": 0.8,
+    "elbow_standoff_mm": 0.5,
+    "throat_depth_mm": 0.8,
+    "throat_transition_overlap_mm": 0.15,
+    "relief_slot_width_mm": 0.8,
+    "relief_slot_height_mm": 5.1,
+    "relief_slot_start_end_depth_mm": [
+      0.8,
+      6.0
+    ],
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      7.5,
+      -7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "centerline_radius_mm": 6.075,
+    "tangent_arm_length_mm": 12.46649486501744,
+    "local_radial_thickness_mm": 7.6,
+    "lane_pitch_mm": 12.0,
+    "socket_axes_y_mm": [
+      -6.0,
+      6.0
+    ],
+    "corner_radius_mm": 0.8,
+    "edge_fillet_mm": 0.4,
+    "geometry_minimums": {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "standard",
+      "sample": false,
+      "dimensions_mm": [
+        14.6,
+        27.2,
+        9.197879
+      ],
+      "independent_removed_void_count": 6,
+      "bend_degrees": 15.0,
+      "bend_axis": "X",
+      "bend_center_y_mm": 0,
+      "section_roll_degrees": [
+        7.5,
+        -7.5
+      ],
+      "insertion_axis_directions": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ]
+      ],
+      "insertion_axes_parallel": true,
+      "local_radial_thickness_mm": 7.6,
+      "enclosed_skin_wall_mm": 0.8001315771843445,
+      "enclosed_relief_wall_mm": 0.7999999999999998,
+      "enclosed_wall_mm": 0.7999999999999998,
+      "closed_end_wall_mm": 3.3999999999999986,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.4999999999999982,
+      "inter_lane_void_separation_mm": 1.195840972792731
+    },
+    "print_rotation_y_degrees": -90.0,
+    "plate_center_xy_mm": [
+      128.0,
+      128.0
+    ],
+    "print_dimensions_mm": [
+      9.19787862399859,
+      27.2000001,
+      14.600000200000004
+    ],
+    "print_transform": [
+      6.123233995736766e-17,
+      0,
+      1.0,
+      0,
+      1,
+      0,
+      -1.0,
+      0,
+      6.123233995736766e-17,
+      127.20106068800071,
+      128.0,
+      7.300000100000001
+    ],
+    "print_settings_overrides": {
+      "sparse_infill_density": "20%",
+      "sparse_infill_pattern": "gyroid",
+      "skeleton_infill_density": "20%",
+      "skin_infill_density": "20%",
+      "wall_loops": "3",
+      "top_shell_layers": "5",
+      "bottom_shell_layers": "5",
+      "top_shell_thickness": "1",
+      "bottom_shell_thickness": "1"
+    },
+    "supports_enabled": false,
+    "insertion_note": "Push along the parallel socket axes. The 15\u00b0 bend is between the lanes, with each pod rolled 7.5\u00b0 about X. Wear the concave face toward the wrist; mirror the right-angle plugs so the cable tails point outward. Capture 2 mm of black base, leaving 0.5 mm to the silver elbow.",
+    "retention_note": "Measured right-angle plug envelope with a trial press-fit throat. Test gentle first; stop if insertion requires force or causes cracking.",
+    "silver_housing_reference": "Schematic only; unmeasured housing stays outside mouth plane.",
+    "step_path": "step/03e_right_angle_side_by_side_standard.step",
+    "stl_path": "stl/03e_right_angle_side_by_side_standard.stl"
+  }
+]

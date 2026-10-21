@@ -82,6 +82,82 @@ The final native slice takes approximately **20–21 minutes and 3.3 g PLA**. [L
 
 Physical acceptance requires printing: both plugs retain #3's usable fit independently, remain seated when the other is inserted or removed, seat comfortably on the wrist, and cause no cracking or separation. Stop if insertion requires excessive force.
 
+## Right-angle #3E variation
+
+**#3E 15° right-angle side-by-side press-fit** is designed for the photographed plugs: **8.10 × 2.30 mm metal tips, 8.40 mm exposed length**, on **9.90 × 4.70 mm black bases approximately 2.50 mm long**. The **15° bend is in the center bridge between the two lanes**, parallel to the insertion direction (X). Each straight socket section rolls **7.5° toward the wrist**; the plugs' wide faces form a 15° angle while their insertion axes remain parallel and open at opposite ends. The concave face goes toward the wrist; orient the right-angle plugs so the cable tails point **outward, away from each other**. The [CAD preview and top cutaway](generated/v6/preview.png) show the loading directions. The silver elbows are schematic because their full dimensions were not measured.
+
+The corrected body is **14.6 × 27.2 × 9.198 mm**, with **7.6 mm local thickness** and socket centers **12 mm apart**, at ±6 mm across the width. Two straight socket sections meet a **6.075 mm centerline-radius arc** at tangent transitions. The flat arms are solved to **12.4665 mm** each after rounding to preserve the 27.2 mm width. The fold is visible in the [cross-section viewed along insertion](generated/v6/bend_section.png). The concave underside faces the wrist; the rounded center bend sits between the plugs. The first #3E exports, whose curvature ran along the wrong axis, are preserved unchanged under **`generated/v6_original_axis/`** and should be used only for comparison. Exterior corner radii are 0.8 mm with 0.4 mm edge fillets. The winning straight #3 and all previous variants remain unchanged.
+
+Each socket has an **8.25 × 2.45 mm metal cavity**, **10.10 × 4.90 mm housing cavity**, and **11.2 mm blind depth**. It captures **2.0 mm of black base**, leaving **0.5 mm between the holder and silver elbow** and **0.8 mm clearance behind the metal tip**. The nominal throat is 0.8 mm with 0.15 mm transition overlap. Its two 0.8 mm relief slots run from 0.8 to 6.0 mm depth and are 5.1 mm high. CAD checks measure **1.196 mm inter-lane separation**, **0.8 mm minimum enclosed walls**, and **3.4 mm closed end walls**. [Side sections](generated/v6/side_sections.png) show the measured tip/base envelopes seated inside the actual sockets.
+
+| Trial fit | Mouth width × height | Total interference against the black base |
+| --- | --- | --- |
+| Gentle | 9.75 × 4.55 mm | 0.15 mm |
+| **Standard (default)** | **9.60 × 4.40 mm** | **0.30 mm** |
+| Firm | 9.45 × 4.25 mm | 0.45 mm |
+
+The [fit-sample project](generated/v6/fit_samples/right_angle_fit_samples_A1_PLA.3mf) contains three independent single-socket samples, **gentle, standard, firm from left to right**, with 12 mm gaps. Each sample is a **straight 14.6 × 14.4 × 7.6 mm single-socket block**, retaining the holder's local cavity geometry, full pocket depth, throat and relief slots, with at least 0.8 mm enclosed walls. Samples have no center bend because each contains only one socket. Only the mouth size changes between fit levels. Use the [sample plate map](generated/v6/fit_samples/plate_map.png) to identify them and the [sample preview](generated/v6/fit_samples/preview.png) to compare the mouths.
+
+Start with gentle and use the least interference that holds securely. Test both actual plugs off your wrist. Stop if insertion requires excessive force or causes damage or cracking. Physical testing must confirm that both plugs retain independently, removing one leaves the other seated, the tails clear the holder, and the wrist curve is comfortable. CAD and slicing do not establish insertion force or durability.
+
+Generate the default standard holder and its A1 project:
+
+```bash
+uv run python main.py --variant right-angle-side-by-side-press-fit
+uv run python build_plate.py --variant right-angle-side-by-side-press-fit
+```
+
+Generate the three samples and their separate A1 plate:
+
+```bash
+uv run python main.py --variant right-angle-fit-samples
+uv run python build_plate.py --variant right-angle-fit-samples
+```
+
+After testing, regenerate a full holder at the selected fit, for example:
+
+```bash
+uv run python main.py --variant right-angle-side-by-side-press-fit --fit gentle --output-dir generated/v6/gentle
+uv run python build_plate.py --variant right-angle-side-by-side-press-fit --fit gentle --output-dir generated/v6/gentle
+```
+
+`--fit gentle|standard|firm` applies to the #3E holder; the samples always include all three. Default outputs are **`generated/v6/`** and **`generated/v6/fit_samples/`**. Existing output overrides and skip options retain their behavior. Manifests record measured plug dimensions, clearances, fit, geometry checks, placement, and print settings. The two projects are prepared without starting a physical print.
+
+The [standard-fit holder project](generated/v6/right_angle_press_fit_3E_A1_PLA.3mf) contains one centered model. Both projects use **A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI**, **20% gyroid**, **three walls**, and **five top and bottom layers with 1 mm shell thickness**, with explicit Studio override metadata. Both print on the **flat negative-X end face, rotated −90° about Y**, with supports disabled. The holder's print envelope is **9.20 × 27.2 × 14.6 mm**; the [holder plate map](generated/v6/plate_map.png) shows its orientation. Open a 3MF in Bambu Studio and click **Slice plate** before printing; the editable projects contain no cached G-code.
+
+Native slicing estimates **19 minutes and 2.7 g PLA** for the corrected holder, or **22 minutes and 4.4 g PLA** for all three straight fit samples. Both projects have **73 layers**, no warnings, no support paths, no floating islands and no blocked socket cores. All **450 socket-core probes** pass; both endpoints of each reviewed bridge are anchored.
+
+`geometry_validation.json`, `fit_validation.json`, `validation.json`, and `toolpath_review.json` record the CAD and native slicing checks. `preservation_validation.json` records hashes of all earlier exports. The [holder toolpaths](generated/v6/layer_paths.png) and [sample toolpaths](generated/v6/fit_samples/layer_paths.png) cover bed-facing mouths, relief-slot closures, pocket roofs, and blind ends. Physical retention remains a print-test acceptance check.
+
+## Print corrected #3E and its fit samples together
+
+The [combined #3E A1 project](generated/v6/combined_plate/corrected_3E_and_fit_samples_A1_PLA.3mf) contains **one corrected #3E holder with standard fit and one each of the gentle, standard, and firm samples**, in that order from left to right, with **12 mm gaps**. The [numbered plate map](generated/v6/combined_plate/plate_map.png) identifies all four objects. The combined project reuses the corrected v6 STLs unchanged; it uses no models from `v6_original_axis/`.
+
+```bash
+uv run python build_plate.py --variant right-angle-holder-and-samples
+```
+
+Output is saved under **`generated/v6/combined_plate/`**. All four models print together by layer on their negative-X end faces (−90° about Y), using **A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI / 20% gyroid / three walls / five top and bottom layers / 1 mm shells / no supports**. The plate builder preserves explicit Studio setting overrides and checks all **450 socket-core positions across five sockets**. The editable 3MF has no cached G-code; open it in Bambu Studio and click **Slice plate**. Native slicing estimates **29 minutes and 7.0 g PLA**, with **73 layers**, no warnings, no supports, no floating islands and no blocked openings. Preparing this project does not start a physical print. Try the gentle sample first.
+
+## Inverted #3E variation
+
+**#3E Inverted 15° right-angle side-by-side press-fit** reverses the corrected #3E's middle bend. With the **same CAD top side up**, its center dips instead of rising: the two socket sections roll **−7.5° / +7.5°** rather than +7.5° / −7.5°. The entire finished holder is reflected across the CAD XY plane, reversing Z. The [original-versus-inverted cross-section](generated/v7/bend_comparison.png) shows both versions in the same coordinates. The bend remains between the lanes about X; insertion axes stay parallel, with openings at opposite ends and the right-angle cable tails pointing outward. Relative to the same CAD top, the lower face is now convex and the upper face concave.
+
+![Original #3E on the left and inverted #3E on the right, viewed along insertion](generated/v7/bend_comparison.png)
+
+Finished dimensions remain **14.6 × 27.2 × 9.198 mm**, with **7.6 mm local thickness**, **12 mm lane spacing**, and a **6.075 mm centerline radius**. Socket dimensions, 11.2 mm pocket depth, 2 mm base capture, 0.8 mm tip clearance, 0.5 mm silver-elbow standoff, retaining throats, relief slots, and all three mouth profiles are unchanged. Minimum enclosed walls remain **0.8 mm**, inter-lane separation is **1.196 mm**, and blind-end walls are **3.4 mm**. Push and withdraw each plug straight along its socket axis; orient the elbows so their cable tails point away from each other. Silver-housing depictions remain schematic.
+
+```bash
+uv run python main.py --variant right-angle-side-by-side-press-fit-inverted
+uv run python build_plate.py --variant right-angle-side-by-side-press-fit-inverted
+```
+
+Outputs are saved under **`generated/v7/`**, with distinct inverted STEP/STL names, [CAD preview](generated/v7/preview.png), [bend section](generated/v7/bend_section.png), [socket sections](generated/v7/side_sections.png), [plate map](generated/v7/plate_map.png), manifests, and validation results. Standard fit is the default. Select `--fit gentle` or `--fit firm` on **both** commands to use another fit, with the same `--output-dir` on both when preserving separate fit exports. Existing skip options and generation defaults retain their behavior. The current #3E, all earlier exports, and the existing straight [fit samples](generated/v6/fit_samples/right_angle_fit_samples_A1_PLA.3mf) are preserved; these samples also test the inverted holder's unchanged fit geometry.
+
+The [inverted #3E A1 project](generated/v7/right_angle_press_fit_3E_inverted_A1_PLA.3mf) contains **one centered standard-fit holder**, negative-X end down, rotated **−90° about Y**. It uses **A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI**, **20% gyroid**, **three walls**, **five top and bottom layers**, **1 mm shells**, and **no supports**, with explicit Studio overrides. Native slicing estimates **19 minutes and 2.7 g PLA**, across **73 layers**. The [toolpath review](generated/v7/layer_paths.png) passes all **180 socket-core probes**, with no warnings, support paths, floating islands, blocked openings, or unanchored bridge endpoints. Open the editable project in Studio and click **Slice plate**; it contains no cached G-code. Preparing it does not start a physical print.
+
+Geometry validation covers all three fits, exact reflection back to the original solids, parallel insertion axes, reversed wide-face normals, straight insertion sweeps, throat-only interference, elbow clearance, and closed meshes. `preservation_validation.json` records hashes of the existing generated deliverables, excluding operating-system metadata. Physical acceptance still requires secure independent retention, outward cable clearance, comfortable wrist seating, and no cracking; reuse the gentle-first fit-sample workflow.
+
 ## Print #3B and #3C together
 
 The [combined A1 project](generated/comparison_3B_3C/connectors_3B_3C_A1_PLA.3mf) contains one of each variation, centered as a group with a **12 mm gap**. **#3B is on the left, on its flat long side at 17 mm print height; #3C is on the right, flat at 8.4 mm height.** The [numbered plate map](generated/comparison_3B_3C/plate_map.png) shows their positions.

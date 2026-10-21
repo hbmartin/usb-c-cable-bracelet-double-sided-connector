@@ -1,0 +1,85 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3E 15\u00b0 right-angle side-by-side press-fit (standard)",
+      "minimum_mm": [
+        123.41513584957342,
+        115.0,
+        -8.275357199494238e-08
+      ],
+      "maximum_mm": [
+        132.58485659467445,
+        141.0,
+        14.481892794110319
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1148.3076171875,
+  "filament_grams": 2.498107433319092,
+  "project_contains_cached_gcode": false,
+  "layer_count": 72,
+  "feature_type_times": {
+    "Bottom surface": 3.996476411819458,
+    "Bridge": 5.2275567054748535,
+    "Custom": 369.0097351074219,
+    "Flush": 25.0,
+    "Gap infill": 52.393436431884766,
+    "Inner wall": 179.93165588378906,
+    "Internal solid infill": 51.369747161865234,
+    "Outer wall": 168.20448303222656,
+    "Overhang wall": 7.217097759246826,
+    "Sparse infill": 4.6226582527160645,
+    "Top surface": 24.65377426147461,
+    "Travel": 273.5610656738281,
+    "Undefined": 256.65167236328125
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 3,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.08242825940074544,
+  "socket_clearance_probes_checked": 180,
+  "minimum_probe_clearance_to_extrusion_mm": 0.4396053419981171,
+  "blocked_socket_core_probes": [],
+  "print_settings_overrides": {
+    "sparse_infill_density": "20%",
+    "sparse_infill_pattern": "gyroid",
+    "skeleton_infill_density": "20%",
+    "skin_infill_density": "20%",
+    "wall_loops": "3",
+    "top_shell_layers": "5",
+    "bottom_shell_layers": "5",
+    "top_shell_thickness": "1",
+    "bottom_shell_thickness": "1"
+  },
+  "stl_closed_two_manifold": true,
+  "geometry": {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "sample": false,
+    "dimensions_mm": [
+      14.6,
+      26.0,
+      7.969485
+    ],
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "local_radial_thickness_mm": 7.6,
+    "curved_skin_wall_mm": 0.9240056588797165,
+    "enclosed_relief_wall_mm": 0.7999999999999997,
+    "enclosed_wall_mm": 0.7999999999999997,
+    "closed_end_wall_mm": 2.453272268938673,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.49999999999999845,
+    "inter_lane_void_separation_mm": 1.0749999999999997
+  },
+  "fit_profiles": [
+    "standard"
+  ]
+}

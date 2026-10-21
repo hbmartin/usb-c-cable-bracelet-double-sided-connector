@@ -1,0 +1,192 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3E gentle fit sample",
+      "minimum_mm": [
+        104.60000000000001,
+        120.8,
+        0.0
+      ],
+      "maximum_mm": [
+        112.2,
+        135.2,
+        14.6
+      ]
+    },
+    {
+      "name": "#3E standard fit sample",
+      "minimum_mm": [
+        124.2,
+        120.8,
+        0.0
+      ],
+      "maximum_mm": [
+        131.8,
+        135.2,
+        14.6
+      ]
+    },
+    {
+      "name": "#3E firm fit sample",
+      "minimum_mm": [
+        143.79999999999998,
+        120.8,
+        0.0
+      ],
+      "maximum_mm": [
+        151.4,
+        135.2,
+        14.6
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1318.8326416015625,
+  "filament_grams": 4.42003870010376,
+  "project_contains_cached_gcode": false,
+  "layer_count": 73,
+  "feature_type_times": {
+    "Bridge": 20.408775329589844,
+    "Custom": 368.98809814453125,
+    "Flush": 25.0,
+    "Gap infill": 88.88954162597656,
+    "Inner wall": 224.1488494873047,
+    "Internal solid infill": 37.59331130981445,
+    "Outer wall": 206.82464599609375,
+    "Overhang wall": 21.845935821533203,
+    "Sparse infill": 19.214820861816406,
+    "Top surface": 10.598217010498047,
+    "Travel": 312.1903991699219,
+    "Undefined": 295.3316955566406
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 6,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.0,
+  "socket_clearance_probes_checked": 270,
+  "minimum_probe_clearance_to_extrusion_mm": 0.43499999999998806,
+  "blocked_socket_core_probes": [],
+  "print_settings_overrides": {
+    "sparse_infill_density": "20%",
+    "sparse_infill_pattern": "gyroid",
+    "skeleton_infill_density": "20%",
+    "skin_infill_density": "20%",
+    "wall_loops": "3",
+    "top_shell_layers": "5",
+    "bottom_shell_layers": "5",
+    "top_shell_thickness": "1",
+    "bottom_shell_thickness": "1"
+  },
+  "stl_closed_two_manifold": true,
+  "geometry": [
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "gentle",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.6
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 0,
+      "bend_axis": null,
+      "bend_center_y_mm": null,
+      "section_roll_degrees": [
+        0
+      ],
+      "insertion_axis_directions": [
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "insertion_axes_parallel": true,
+      "local_radial_thickness_mm": 7.6,
+      "enclosed_skin_wall_mm": 0.7999999999999998,
+      "enclosed_relief_wall_mm": 0.7999999999999998,
+      "enclosed_wall_mm": 0.7999999999999998,
+      "closed_end_wall_mm": 3.3999999999999986,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.5000000000000009
+    },
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "standard",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.6
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 0,
+      "bend_axis": null,
+      "bend_center_y_mm": null,
+      "section_roll_degrees": [
+        0
+      ],
+      "insertion_axis_directions": [
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "insertion_axes_parallel": true,
+      "local_radial_thickness_mm": 7.6,
+      "enclosed_skin_wall_mm": 0.7999999999999998,
+      "enclosed_relief_wall_mm": 0.7999999999999998,
+      "enclosed_wall_mm": 0.7999999999999998,
+      "closed_end_wall_mm": 3.3999999999999986,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.5000000000000009
+    },
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "firm",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.6
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 0,
+      "bend_axis": null,
+      "bend_center_y_mm": null,
+      "section_roll_degrees": [
+        0
+      ],
+      "insertion_axis_directions": [
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "insertion_axes_parallel": true,
+      "local_radial_thickness_mm": 7.6,
+      "enclosed_skin_wall_mm": 0.7999999999999998,
+      "enclosed_relief_wall_mm": 0.7999999999999998,
+      "enclosed_wall_mm": 0.7999999999999998,
+      "closed_end_wall_mm": 3.3999999999999986,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.5000000000000009
+    }
+  ],
+  "fit_profiles": [
+    "gentle",
+    "standard",
+    "firm"
+  ]
+}

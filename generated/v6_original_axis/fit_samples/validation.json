@@ -1,0 +1,153 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3E gentle fit sample",
+      "minimum_mm": [
+        102.24538716844137,
+        120.8,
+        -2.673266150665654e-07
+      ],
+      "maximum_mm": [
+        111.4151079135424,
+        135.2,
+        14.481892794110395
+      ]
+    },
+    {
+      "name": "#3E standard fit sample",
+      "minimum_mm": [
+        123.41513584957336,
+        120.8,
+        -8.27534964997767e-08
+      ],
+      "maximum_mm": [
+        132.5848565946744,
+        135.2,
+        14.481892794110395
+      ]
+    },
+    {
+      "name": "#3E firm fit sample",
+      "minimum_mm": [
+        144.58488453070532,
+        120.8,
+        -1.0158797447701318e-07
+      ],
+      "maximum_mm": [
+        153.75460527580634,
+        135.2,
+        14.481892794110395
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1316.2752685546875,
+  "filament_grams": 4.189725399017334,
+  "project_contains_cached_gcode": false,
+  "layer_count": 72,
+  "feature_type_times": {
+    "Bridge": 8.935301780700684,
+    "Custom": 368.96533203125,
+    "Flush": 25.0,
+    "Gap infill": 70.74156188964844,
+    "Inner wall": 200.6875457763672,
+    "Internal solid infill": 51.48308181762695,
+    "Outer wall": 214.8870849609375,
+    "Overhang wall": 21.567564010620117,
+    "Sparse infill": 11.545320510864258,
+    "Top surface": 33.45502853393555,
+    "Travel": 325.8438720703125,
+    "Undefined": 309.0079040527344
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 3,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.0,
+  "socket_clearance_probes_checked": 270,
+  "minimum_probe_clearance_to_extrusion_mm": 0.4495566360214127,
+  "blocked_socket_core_probes": [],
+  "print_settings_overrides": {
+    "sparse_infill_density": "20%",
+    "sparse_infill_pattern": "gyroid",
+    "skeleton_infill_density": "20%",
+    "skin_infill_density": "20%",
+    "wall_loops": "3",
+    "top_shell_layers": "5",
+    "bottom_shell_layers": "5",
+    "top_shell_thickness": "1",
+    "bottom_shell_thickness": "1"
+  },
+  "stl_closed_two_manifold": true,
+  "geometry": [
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "gentle",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.969485
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 15.0,
+      "local_radial_thickness_mm": 7.6,
+      "curved_skin_wall_mm": 0.9240056588797165,
+      "enclosed_relief_wall_mm": 0.7999999999999989,
+      "enclosed_wall_mm": 0.7999999999999989,
+      "closed_end_wall_mm": 2.453272268938673,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.500000000000002
+    },
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "standard",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.969485
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 15.0,
+      "local_radial_thickness_mm": 7.6,
+      "curved_skin_wall_mm": 0.9240056588797165,
+      "enclosed_relief_wall_mm": 0.7999999999999989,
+      "enclosed_wall_mm": 0.7999999999999989,
+      "closed_end_wall_mm": 2.453272268938673,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.500000000000002
+    },
+    {
+      "valid": true,
+      "solid_count": 1,
+      "fit": "firm",
+      "sample": true,
+      "dimensions_mm": [
+        14.6,
+        14.4,
+        7.969485
+      ],
+      "independent_removed_void_count": 3,
+      "bend_degrees": 15.0,
+      "local_radial_thickness_mm": 7.6,
+      "curved_skin_wall_mm": 0.9240056588797165,
+      "enclosed_relief_wall_mm": 0.7999999999999989,
+      "enclosed_wall_mm": 0.7999999999999989,
+      "closed_end_wall_mm": 2.453272268938673,
+      "body_outside_mouth_planes_mm3": 0,
+      "silver_elbow_standoff_mm": 0.500000000000002
+    }
+  ],
+  "fit_profiles": [
+    "gentle",
+    "standard",
+    "firm"
+  ]
+}

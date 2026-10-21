@@ -1,0 +1,21 @@
+{
+  "valid": true,
+  "solid_count": 1,
+  "fit": "standard",
+  "sample": false,
+  "dimensions_mm": [
+    14.6,
+    26.0,
+    7.969485
+  ],
+  "independent_removed_void_count": 6,
+  "bend_degrees": 15.0,
+  "local_radial_thickness_mm": 7.6,
+  "curved_skin_wall_mm": 0.9240056588797165,
+  "enclosed_relief_wall_mm": 0.7999999999999997,
+  "enclosed_wall_mm": 0.7999999999999997,
+  "closed_end_wall_mm": 2.453272268938673,
+  "body_outside_mouth_planes_mm3": 0,
+  "silver_elbow_standoff_mm": 0.49999999999999845,
+  "inter_lane_void_separation_mm": 1.0749999999999997
+}

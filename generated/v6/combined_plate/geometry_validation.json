@@ -1,0 +1,141 @@
+[
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "sample": false,
+    "dimensions_mm": [
+      14.6,
+      27.2,
+      9.197879
+    ],
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      7.5,
+      -7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.8001315771843445,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 3.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.4999999999999982,
+    "inter_lane_void_separation_mm": 1.195840972792731
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "gentle",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.6
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 0,
+    "bend_axis": null,
+    "bend_center_y_mm": null,
+    "section_roll_degrees": [
+      0
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.7999999999999998,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 3.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.5000000000000009
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.6
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 0,
+    "bend_axis": null,
+    "bend_center_y_mm": null,
+    "section_roll_degrees": [
+      0
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.7999999999999998,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 3.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.5000000000000009
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "firm",
+    "sample": true,
+    "dimensions_mm": [
+      14.6,
+      14.4,
+      7.6
+    ],
+    "independent_removed_void_count": 3,
+    "bend_degrees": 0,
+    "bend_axis": null,
+    "bend_center_y_mm": null,
+    "section_roll_degrees": [
+      0
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.7999999999999998,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 3.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.5000000000000009
+  }
+]

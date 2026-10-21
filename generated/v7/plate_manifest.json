@@ -1,0 +1,35 @@
+{
+  "variant": "right-angle-side-by-side-press-fit-inverted",
+  "gap_mm": null,
+  "objects": [
+    {
+      "name": "#3E Inverted 15\u00b0 right-angle side-by-side press-fit (standard)",
+      "fit": "standard",
+      "center_xy_mm": [
+        128.0,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        9.197878623998593,
+        27.200000000000003,
+        14.600000100000004
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        128.7989393119993,
+        128.0,
+        7.300000000000001
+      ],
+      "source_stl": "stl/03e_inverted_right_angle_side_by_side_standard.stl",
+      "source_sha256": "af60233528e6f1f9107fa8f14df54c29d40a0905494a48e7e516dc424b0e415a"
+    }
+  ]
+}

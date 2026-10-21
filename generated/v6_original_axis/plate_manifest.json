@@ -1,0 +1,35 @@
+{
+  "variant": "right-angle-side-by-side-press-fit",
+  "gap_mm": null,
+  "objects": [
+    {
+      "name": "#3E 15\u00b0 right-angle side-by-side press-fit (standard)",
+      "fit": "standard",
+      "center_xy_mm": [
+        128.0,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        9.169748681131878,
+        26.000000200000237,
+        14.481939086584084
+      ],
+      "transform": [
+        0.1305261922200517,
+        0,
+        0.9914448613738104,
+        0,
+        1,
+        0,
+        -0.9914448613738104,
+        0,
+        0.1305261922200517,
+        127.66286243313998,
+        128.0,
+        6.852975682927386
+      ],
+      "source_stl": "stl/03e_right_angle_side_by_side_standard.stl",
+      "source_sha256": "b59c79f787c4914bd694a07ac4ad9b2c3b16f7f6f46378f63b7dad2b0696360b"
+    }
+  ]
+}

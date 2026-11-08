@@ -73,7 +73,7 @@ RIDGE_CENTERS = (1.3, 2.5)
 PLATE_CENTERS = ((92.0, 128.0), (128.0, 128.0), (164.0, 128.0))
 VARIANTS = ("compact", "curved-press-fit", "side-by-side-press-fit", "curved-side-by-side-press-fit",
             "right-angle-side-by-side-press-fit", "right-angle-fit-samples",
-            "right-angle-side-by-side-press-fit-inverted")
+            "right-angle-side-by-side-press-fit-inverted", "right-angle-side-by-side-press-fit-compact")
 BEND_DEGREES = 15.0
 HALF_BEND = radians(BEND_DEGREES / 2)
 CURVED_END_RADIUS = 0.8
@@ -85,6 +85,17 @@ CURVED_SIDE_BY_SIDE_PRINT_ANGLE = -82.5
 
 def build_concepts(variant: str = "compact", fit: str = "standard") -> list[ConceptSpec]:
     """The three requested revisions; IDs refer to the original nine-part plate."""
+    if variant == "right-angle-side-by-side-press-fit-compact":
+        from right_angle_compact import FITS
+        if fit not in FITS:
+            raise ValueError(f"Unknown #3F fit: {fit}")
+        return [ConceptSpec(3, f"03f_compact_tapered_right_angle_{fit}",
+                    f"#3F Compact tapered 15° right-angle press-fit ({fit})", "compact_right_angle_holder", .15, .20,
+                    "Push each plug along its straight axis from opposite ends, with cable tails outward. "
+                    "The inverted 15° middle bend has −7.5° / +7.5° section rolls; insertion axes remain parallel. "
+                    "Capture 2 mm of black base, leaving 0.5 mm to the silver elbow.",
+                    "Same local sockets and trial mouth fits as #3E Inverted, with a 13.6 mm body and tapered outer flanks. "
+                    "Reuse the straight fit samples; physical retention and wrist comfort require a print test.", fit, True)]
     if variant.startswith("right-angle-"):
         from right_angle import FITS, SAMPLES, HOLDER, INVERTED
         if fit not in FITS:
@@ -238,6 +249,10 @@ def housing_retainers(spec: ConceptSpec) -> list:
 
 
 def build_part(spec: ConceptSpec):
+    if spec.retention_style == "compact_right_angle_holder":
+        from right_angle_compact import build_holder, geometry_report
+        geometry_report(spec.fit)
+        return build_holder(spec.fit)
     if spec.retention_style in ("right_angle_holder", "right_angle_sample"):
         from right_angle import build_holder, geometry_report
         sample = spec.retention_style == "right_angle_sample"
@@ -463,10 +478,14 @@ def default_output_dir(variant: str) -> Path:
                  "side-by-side-press-fit": "generated/v4", "curved-side-by-side-press-fit": "generated/v5",
                  "right-angle-side-by-side-press-fit": "generated/v6",
                  "right-angle-fit-samples": "generated/v6/fit_samples",
-                 "right-angle-side-by-side-press-fit-inverted": "generated/v7"}[variant])
+                 "right-angle-side-by-side-press-fit-inverted": "generated/v7",
+                 "right-angle-side-by-side-press-fit-compact": "generated/v8"}[variant])
 
 
 def plate_centers(variant: str = "compact"):
+    if variant == "right-angle-side-by-side-press-fit-compact":
+        from right_angle_compact import layout
+        return layout()[2]
     if variant.startswith("right-angle-"):
         from right_angle import layout
         return layout(variant)[2]
@@ -475,6 +494,10 @@ def plate_centers(variant: str = "compact"):
 
 def print_geometry(variant: str = "compact"):
     """Expected dimensions and explicit 3MF transforms, with Z minimum on the bed."""
+    if variant == "right-angle-side-by-side-press-fit-compact":
+        from right_angle_compact import layout
+        dimensions, transforms, _ = layout()
+        return dimensions, transforms
     if variant.startswith("right-angle-"):
         from right_angle import layout
         dimensions, transforms, _ = layout(variant)
@@ -504,6 +527,10 @@ def rounded_dimensions(part) -> tuple[float, float, float]:
 
 
 def write_manifest(concepts: list[GeneratedConcept], output_dir: Path, variant="compact") -> None:
+    if variant == "right-angle-side-by-side-press-fit-compact":
+        from right_angle_compact import write_manifest as write_compact_manifest
+        write_compact_manifest(concepts, output_dir)
+        return
     if variant.startswith("right-angle-"):
         from right_angle import write_manifest as write_right_angle_manifest
         write_right_angle_manifest(concepts, output_dir, variant)
@@ -754,7 +781,11 @@ def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool 
         if export_step_file:
             export_step(part, step_path)
         if export_mesh:
-            export_stl(part, stl_path, tolerance=0.02, angular_tolerance=0.1)
+            if variant == "right-angle-side-by-side-press-fit-compact":
+                from right_angle_compact import export_mesh as export_compact_mesh
+                export_compact_mesh(part, stl_path)
+            else:
+                export_stl(part, stl_path, tolerance=0.02, angular_tolerance=0.1)
         generated.append(GeneratedConcept(spec, rounded_dimensions(part), part.volume, step_path, stl_path))
         if variant == "curved-press-fit":
             from preview_curved import write_preview
@@ -766,7 +797,11 @@ def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool 
             from preview_curved_side_by_side import write_preview
             write_preview(part, output_dir)
     write_manifest(generated, output_dir, variant)
-    if variant.startswith("right-angle-"):
+    if variant == "right-angle-side-by-side-press-fit-compact":
+        from preview_right_angle_compact import write_preview, write_plate_map
+        write_preview(generated, output_dir)
+        write_plate_map(generated, output_dir)
+    elif variant.startswith("right-angle-"):
         from preview_right_angle import write_preview, write_plate_map
         write_preview(generated, output_dir, variant)
         write_plate_map(generated, output_dir, variant)
@@ -774,17 +809,17 @@ def generate(output_dir: Path, export_mesh: bool = True, export_step_file: bool 
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate compact USB-C cable retainers and #3B–#3E variations.")
+    parser = argparse.ArgumentParser(description="Generate compact USB-C cable retainers and #3B–#3F variations.")
     parser.add_argument("--variant", choices=VARIANTS, default="compact")
     parser.add_argument("--fit", choices=("gentle", "standard", "firm"), default="standard",
-                        help="Trial retaining-mouth fit for the #3E holder; samples always include all three.")
+                        help="Trial retaining-mouth fit for #3E/#3F holders; samples always include all three.")
     parser.add_argument("--output-dir", type=Path,
-                        help="Output folder (compact: v2; #3B: v3; #3C: v4; #3D: v5; #3E: v6; #3E inverted: v7, under generated/).")
+                        help="Output folder (compact: v2; #3B: v3; #3C: v4; #3D: v5; #3E: v6; #3E inverted: v7; #3F: v8, under generated/).")
     parser.add_argument("--skip-stl", action="store_true", help="Skip STL export.")
     parser.add_argument("--skip-step", action="store_true", help="Skip STEP export.")
     args = parser.parse_args()
-    if args.fit != "standard" and args.variant not in ("right-angle-side-by-side-press-fit", "right-angle-side-by-side-press-fit-inverted"):
-        parser.error("--fit is only selectable for right-angle-side-by-side-press-fit")
+    if args.fit != "standard" and args.variant not in ("right-angle-side-by-side-press-fit", "right-angle-side-by-side-press-fit-inverted", "right-angle-side-by-side-press-fit-compact"):
+        parser.error("--fit is only selectable for #3E/#3F right-angle holders")
     return args
 
 

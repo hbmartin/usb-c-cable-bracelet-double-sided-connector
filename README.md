@@ -158,6 +158,25 @@ The [inverted #3E A1 project](generated/v7/right_angle_press_fit_3E_inverted_A1_
 
 Geometry validation covers all three fits, exact reflection back to the original solids, parallel insertion axes, reversed wide-face normals, straight insertion sweeps, throat-only interference, elbow clearance, and closed meshes. `preservation_validation.json` records hashes of the existing generated deliverables, excluding operating-system metadata. Physical acceptance still requires secure independent retention, outward cable clearance, comfortable wrist seating, and no cracking; reuse the gentle-first fit-sample workflow.
 
+## Compact tapered #3F variation
+
+**#3F Compact tapered 15° right-angle press-fit** builds on **inverted #3E**, with a **13.6 × 27.2 × 9.198 mm** body. It is **1 mm (6.85%) shorter** along the insertion direction. Smooth outer flanks narrow around the metal-tip pockets, beyond the relief slots; each mouth and its surrounding relief region retain their full width. The two tapers are mirrored across opposite outer corners. Standard-fit CAD volume is **1,961.7 mm³**, **14.3% less than inverted #3E**. This is the solid CAD volume comparison; printed weight depends on the slice.
+
+The [CAD preview and cutaway](generated/v8/preview.png) show both sockets and outward cable directions. The [exterior comparison](generated/v8/comparison.png) overlays the shortened, tapered body on inverted #3E in the same coordinates. The overall width and height stay unchanged. The existing **15° bend between the lanes**, **−7.5° / +7.5° section rolls**, **12 mm socket spacing**, **7.6 mm local thickness**, and parallel insertion axes are preserved. The center dips with the same CAD top up.
+
+Each complete socket is rigidly translated **0.5 mm inward** with its end face; it is not scaled. All #3E fits remain available: **8.25 × 2.45 mm metal cavities**, **10.10 × 4.90 mm base cavities**, gentle/standard/firm mouths, **11.2 mm blind depth**, **2 mm base capture**, **0.8 mm tip clearance**, **0.5 mm elbow standoff**, and unchanged throats and relief slots. Minimum enclosed walls remain **0.8 mm**, inter-lane separation **1.196 mm**, and blind-end walls **2.4 mm**. Cubic curves blend the exterior tapers into straight rear flanks, with 0.4 mm rounding at new intersections. The existing straight [#3E fit samples](generated/v6/fit_samples/right_angle_fit_samples_A1_PLA.3mf) remain applicable.
+
+```bash
+uv run python main.py --variant right-angle-side-by-side-press-fit-compact
+uv run python build_plate.py --variant right-angle-side-by-side-press-fit-compact
+```
+
+Outputs default to **`generated/v8/`**, including STEP, closed STL, geometry/fit reports, previews, [plate map](generated/v8/plate_map.png), and the [#3F A1 project](generated/v8/compact_tapered_press_fit_3F_A1_PLA.3mf). Standard fit is the default. Use `--fit gentle` or `--fit firm` on both commands and a matching `--output-dir` to keep separate fit exports. Existing `--skip-step`, `--skip-stl`, variants, defaults, and earlier generated files are preserved. STL export welds coincident tessellation seams at 0.000001 mm precision and removes collapsed triangles, then requires a closed two-manifold mesh; the adjacent `.mesh.json` report records that cleanup.
+
+The project contains one centered holder with its **negative-X end down, rotated −90° about Y**, at **13.6 mm print height**. It retains **A1 / Generic PLA / 0.4 mm / 0.20 mm Standard / Textured PEI**, **20% gyroid**, **three walls**, **five top and bottom layers**, **1 mm shells**, disabled supports, and explicit Studio process overrides. Open the editable project and click **Slice plate** before printing. Preparing it does not start a print.
+
+Native slicing estimates **18 minutes 31 seconds and 2.4 g PLA**, across **68 layers**, with no warnings, supports, floating islands, blocked socket cores, or unanchored bridge endpoints. The [native toolpath review](generated/v8/layer_paths.png), `validation.json`, and `toolpath_review.json` cover mouths, relief-slot transitions, blind stops, floating islands, bridge anchoring, and 180 socket-core probes. Regression tests check all three fits, straight insertion sweeps, throat-only interference, parallel axes, the reversed 15° roll, taper material removal, and hashes of earlier exports. Physical testing must still confirm independent retention, outward cable clearance, comfortable wrist contact, and no cracking.
+
 ## Print #3B and #3C together
 
 The [combined A1 project](generated/comparison_3B_3C/connectors_3B_3C_A1_PLA.3mf) contains one of each variation, centered as a group with a **12 mm gap**. **#3B is on the left, on its flat long side at 17 mm print height; #3C is on the right, flat at 8.4 mm height.** The [numbered plate map](generated/comparison_3B_3C/plate_map.png) shows their positions.

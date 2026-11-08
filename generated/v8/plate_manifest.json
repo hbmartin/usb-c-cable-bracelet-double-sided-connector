@@ -1,0 +1,34 @@
+{
+  "variant": "right-angle-side-by-side-press-fit-compact",
+  "objects": [
+    {
+      "name": "#3F Compact tapered 15\u00b0 right-angle press-fit (standard)",
+      "fit": "standard",
+      "center_xy_mm": [
+        128.0,
+        128.0
+      ],
+      "print_dimensions_mm": [
+        9.197878723998592,
+        27.200000199999998,
+        13.600000100000003
+      ],
+      "transform": [
+        6.123233995736766e-17,
+        0,
+        1.0,
+        0,
+        1,
+        0,
+        -1.0,
+        0,
+        6.123233995736766e-17,
+        128.7989393619993,
+        128.0,
+        6.8
+      ],
+      "source_stl": "stl/03f_compact_tapered_right_angle_standard.stl",
+      "source_sha256": "637db704e491261c38ae8b47cf26b332842e14501f9ab136adcea4b5aa361480"
+    }
+  ]
+}

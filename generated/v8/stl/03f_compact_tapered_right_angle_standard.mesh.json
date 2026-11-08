@@ -1,0 +1,8 @@
+{
+  "stl_closed_two_manifold": true,
+  "tessellated_triangles": 25542,
+  "exported_triangles": 25538,
+  "collapsed_seam_triangles_removed": 4,
+  "coordinate_weld_decimal_places_mm": 6,
+  "maximum_coordinate_adjustment_mm": 9.5367431640625e-07
+}

@@ -55,7 +55,7 @@ E = RightAngleEnvelope()
 S, C = sin(radians(E.bend/2)), cos(radians(E.bend/2))
 
 
-def body_at_arm_length(arm):
+def body_at_arm_length(arm, length=E.length):
     """YZ straight–arc–straight section, extruded along the parallel socket axes (X)."""
     radius = E.center_radius
     half = E.radial_thickness/2
@@ -74,7 +74,7 @@ def body_at_arm_length(arm):
         Edge.make_line(mirror(lower), mirror(lower_end)),
         Edge.make_line(mirror(lower_end), mirror(upper_end)),
     ])
-    part = extrude(Face(outline), amount=E.length, dir=(1, 0, 0)).translate((-E.length/2, 0, 0))
+    part = extrude(Face(outline), amount=length, dir=(1, 0, 0)).translate((-length/2, 0, 0))
     part = part.fillet(E.corner_radius, [e for e in part.edges() if abs(e.length-E.radial_thickness)<1e-6])
     return part.fillet(E.edge_fillet, part.edges())
 

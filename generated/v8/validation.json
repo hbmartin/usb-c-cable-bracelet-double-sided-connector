@@ -1,0 +1,131 @@
+{
+  "printer": "Bambu Lab A1 0.4 nozzle",
+  "filament": "Generic PLA @BBL A1",
+  "process": "0.20mm Standard @BBL A1",
+  "supports_enabled": false,
+  "objects": [
+    {
+      "name": "#3F Compact tapered 15\u00b0 right-angle press-fit (standard)",
+      "minimum_mm": [
+        123.40110836199929,
+        114.400051,
+        0.0
+      ],
+      "maximum_mm": [
+        132.5989393619993,
+        141.599949,
+        13.6
+      ]
+    }
+  ],
+  "slicer_return_code": 0,
+  "slice_warning": "",
+  "estimated_seconds": 1111.4720458984375,
+  "filament_grams": 2.3947594165802,
+  "project_contains_cached_gcode": false,
+  "layer_count": 68,
+  "feature_type_times": {
+    "Bottom surface": 3.8104639053344727,
+    "Bridge": 8.485156059265137,
+    "Custom": 369.0422058105469,
+    "Flush": 25.0,
+    "Gap infill": 63.018951416015625,
+    "Inner wall": 191.1638946533203,
+    "Internal solid infill": 36.037933349609375,
+    "Outer wall": 152.9300537109375,
+    "Overhang wall": 7.087874889373779,
+    "Sparse infill": 3.046027421951294,
+    "Top surface": 12.549036026000977,
+    "Travel": 256.1758117675781,
+    "Undefined": 239.27459716796875
+  },
+  "floating_layer_islands": [],
+  "bridge_path_starts_checked": 6,
+  "maximum_bridge_start_distance_mm": 0.0,
+  "maximum_bridge_end_distance_mm": 0.01908107648522051,
+  "socket_clearance_probes_checked": 180,
+  "minimum_probe_clearance_to_extrusion_mm": 0.4345445573907406,
+  "blocked_socket_core_probes": [],
+  "print_settings_overrides": {
+    "sparse_infill_density": "20%",
+    "sparse_infill_pattern": "gyroid",
+    "skeleton_infill_density": "20%",
+    "skin_infill_density": "20%",
+    "wall_loops": "3",
+    "top_shell_layers": "5",
+    "bottom_shell_layers": "5",
+    "top_shell_thickness": "1",
+    "bottom_shell_thickness": "1"
+  },
+  "stl_closed_two_manifold": true,
+  "geometry": {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "variant_id": "3F",
+    "based_on": "3E Inverted",
+    "inverted_bend": true,
+    "dimensions_mm": [
+      13.6,
+      27.2,
+      9.197879
+    ],
+    "volume_mm3": 1961.657603435029,
+    "reference_volume_mm3": 2288.039268802472,
+    "volume_reduction_percent": 14.264688102939193,
+    "length_reduction_percent": 6.849315068493156,
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      -7.5,
+      7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.8001315771843445,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 2.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.4999999999999982,
+    "inter_lane_void_separation_mm": 1.1958409727927308,
+    "taper_control_depth_outward_mm": [
+      [
+        6.6,
+        7.7
+      ],
+      [
+        8.4,
+        7.7
+      ],
+      [
+        9.4,
+        5.3
+      ],
+      [
+        11.2,
+        5.3
+      ]
+    ],
+    "taper_rear_outward_half_width_mm": 5.3,
+    "taper_edge_fillet_mm": 0.4,
+    "taper_only_removed_material_mm3": 124.94104069449259
+  },
+  "fit_profiles": [
+    "standard"
+  ]
+}

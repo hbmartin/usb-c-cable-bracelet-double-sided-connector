@@ -1,0 +1,203 @@
+[
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "gentle",
+    "variant_id": "3F",
+    "based_on": "3E Inverted",
+    "inverted_bend": true,
+    "dimensions_mm": [
+      13.6,
+      27.2,
+      9.197879
+    ],
+    "volume_mm3": 1958.8983534350284,
+    "reference_volume_mm3": 2285.280018802472,
+    "volume_reduction_percent": 14.281911305489537,
+    "length_reduction_percent": 6.849315068493156,
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      -7.5,
+      7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.8001315771843445,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 2.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.4999999999999982,
+    "inter_lane_void_separation_mm": 1.1958409727927308,
+    "taper_control_depth_outward_mm": [
+      [
+        6.6,
+        7.7
+      ],
+      [
+        8.4,
+        7.7
+      ],
+      [
+        9.4,
+        5.3
+      ],
+      [
+        11.2,
+        5.3
+      ]
+    ],
+    "taper_rear_outward_half_width_mm": 5.3,
+    "taper_edge_fillet_mm": 0.4,
+    "taper_only_removed_material_mm3": 124.94104069449259
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "standard",
+    "variant_id": "3F",
+    "based_on": "3E Inverted",
+    "inverted_bend": true,
+    "dimensions_mm": [
+      13.6,
+      27.2,
+      9.197879
+    ],
+    "volume_mm3": 1961.657603435029,
+    "reference_volume_mm3": 2288.039268802472,
+    "volume_reduction_percent": 14.264688102939193,
+    "length_reduction_percent": 6.849315068493156,
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      -7.5,
+      7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.8001315771843445,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 2.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.4999999999999982,
+    "inter_lane_void_separation_mm": 1.1958409727927308,
+    "taper_control_depth_outward_mm": [
+      [
+        6.6,
+        7.7
+      ],
+      [
+        8.4,
+        7.7
+      ],
+      [
+        9.4,
+        5.3
+      ],
+      [
+        11.2,
+        5.3
+      ]
+    ],
+    "taper_rear_outward_half_width_mm": 5.3,
+    "taper_edge_fillet_mm": 0.4,
+    "taper_only_removed_material_mm3": 124.94104069449259
+  },
+  {
+    "valid": true,
+    "solid_count": 1,
+    "fit": "firm",
+    "variant_id": "3F",
+    "based_on": "3E Inverted",
+    "inverted_bend": true,
+    "dimensions_mm": [
+      13.6,
+      27.2,
+      9.197879
+    ],
+    "volume_mm3": 1964.3583534350284,
+    "reference_volume_mm3": 2290.740018802472,
+    "volume_reduction_percent": 14.247870237935857,
+    "length_reduction_percent": 6.849315068493156,
+    "independent_removed_void_count": 6,
+    "bend_degrees": 15.0,
+    "bend_axis": "X",
+    "bend_center_y_mm": 0,
+    "section_roll_degrees": [
+      -7.5,
+      7.5
+    ],
+    "insertion_axis_directions": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        -1,
+        0,
+        0
+      ]
+    ],
+    "insertion_axes_parallel": true,
+    "local_radial_thickness_mm": 7.6,
+    "enclosed_skin_wall_mm": 0.8001315771843445,
+    "enclosed_relief_wall_mm": 0.7999999999999998,
+    "enclosed_wall_mm": 0.7999999999999998,
+    "closed_end_wall_mm": 2.3999999999999986,
+    "body_outside_mouth_planes_mm3": 0,
+    "silver_elbow_standoff_mm": 0.4999999999999982,
+    "inter_lane_void_separation_mm": 1.1958409727927308,
+    "taper_control_depth_outward_mm": [
+      [
+        6.6,
+        7.7
+      ],
+      [
+        8.4,
+        7.7
+      ],
+      [
+        9.4,
+        5.3
+      ],
+      [
+        11.2,
+        5.3
+      ]
+    ],
+    "taper_rear_outward_half_width_mm": 5.3,
+    "taper_edge_fillet_mm": 0.4,
+    "taper_only_removed_material_mm3": 124.94104069449259
+  }
+]

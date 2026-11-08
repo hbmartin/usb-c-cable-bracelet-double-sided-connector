@@ -22,8 +22,9 @@ from main import ConceptSpec, VARIANTS, build_concepts, default_output_dir, plat
 from right_angle import HOLDER as RIGHT_ANGLE_HOLDER, SAMPLES as RIGHT_ANGLE_SAMPLES, PRINT_SETTINGS as RIGHT_ANGLE_SETTINGS
 from right_angle import COMBINED as RIGHT_ANGLE_COMBINED, combined_layout
 from right_angle import INVERTED as RIGHT_ANGLE_INVERTED
+from right_angle_compact import COMPACT as RIGHT_ANGLE_COMPACT
 
-RIGHT_ANGLE_VARIANTS = (RIGHT_ANGLE_HOLDER, RIGHT_ANGLE_SAMPLES, RIGHT_ANGLE_COMBINED, RIGHT_ANGLE_INVERTED)
+RIGHT_ANGLE_VARIANTS = (RIGHT_ANGLE_HOLDER, RIGHT_ANGLE_SAMPLES, RIGHT_ANGLE_COMBINED, RIGHT_ANGLE_INVERTED, RIGHT_ANGLE_COMPACT)
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_BAMBU = Path('/Applications/BambuStudio.app/Contents/MacOS/BambuStudio')
@@ -458,6 +459,7 @@ def build_plate(output_dir: Path, bambu: Path, baseline: Path = BASELINE,
                               'curved-side-by-side-press-fit': 'curved_side_by_side_press_fit_3D_A1_PLA.3mf',
                               RIGHT_ANGLE_HOLDER: 'right_angle_press_fit_3E_A1_PLA.3mf',
                               RIGHT_ANGLE_INVERTED: 'right_angle_press_fit_3E_inverted_A1_PLA.3mf',
+                              RIGHT_ANGLE_COMPACT: 'compact_tapered_press_fit_3F_A1_PLA.3mf',
                               RIGHT_ANGLE_SAMPLES: 'right_angle_fit_samples_A1_PLA.3mf',
                               RIGHT_ANGLE_COMBINED: 'corrected_3E_and_fit_samples_A1_PLA.3mf',
                               COMPARISON: 'connectors_3B_3C_A1_PLA.3mf'}[variant]
@@ -488,12 +490,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--variant', choices=PLATE_VARIANTS, default='compact')
     parser.add_argument('--fit', choices=('gentle', 'standard', 'firm'), default='standard',
-                        help='Trial retaining-mouth fit for the #3E holder; samples include all three.')
+                        help='Trial retaining-mouth fit for #3E/#3F holders; samples include all three.')
     parser.add_argument('--output-dir', type=Path,
                         help='Output folder (comparison: generated/comparison_3B_3C; other variants retain their defaults).')
     parser.add_argument('--bambu-studio', type=Path, default=DEFAULT_BAMBU)
     args = parser.parse_args()
-    if args.fit != 'standard' and args.variant not in (RIGHT_ANGLE_HOLDER, RIGHT_ANGLE_INVERTED):
-        parser.error('--fit is only selectable for right-angle-side-by-side-press-fit')
+    if args.fit != 'standard' and args.variant not in (RIGHT_ANGLE_HOLDER, RIGHT_ANGLE_INVERTED, RIGHT_ANGLE_COMPACT):
+        parser.error('--fit is only selectable for #3E/#3F right-angle holders')
     build_plate(args.output_dir or default_plate_output_dir(args.variant), args.bambu_studio,
                 variant=args.variant, fit=args.fit)
